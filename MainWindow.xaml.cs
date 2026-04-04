@@ -27,15 +27,6 @@ namespace SmartPaste
             if (_manager != null)
             {
                 SldSpeed.Value = _manager.DelayMilliseconds;
-                
-                foreach (ComboBoxItem item in CmbSeparator.Items)
-                {
-                    if (item.Content.ToString() == _manager.SplitSeparator)
-                    {
-                        CmbSeparator.SelectedItem = item;
-                        break;
-                    }
-                }
             }
             
             _isInitializing = false;
@@ -65,21 +56,6 @@ namespace SmartPaste
                 _settings.AutoStart = ChkAutoStart.IsChecked.Value;
                 SettingsManager.Save(_settings);
                 AutoStartManager.SetAutoStart(_settings.AutoStart);
-            }
-        }
-
-        private void CmbSeparator_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_isInitializing) return;
-            if (_manager != null && CmbSeparator.SelectedItem is ComboBoxItem item)
-            {
-                string sep = item.Content.ToString();
-                _manager.SplitSeparator = sep;
-                if (_settings != null)
-                {
-                    _settings.SplitSeparator = sep;
-                    SettingsManager.Save(_settings);
-                }
             }
         }
 

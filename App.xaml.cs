@@ -43,7 +43,6 @@ public partial class App : Application
         if (Settings != null)
         {
             pasteManager.DelayMilliseconds = Settings.DelayMilliseconds;
-            pasteManager.SplitSeparator = Settings.SplitSeparator;
         }
 
         caseConverterManager = new CaseConverterManager();

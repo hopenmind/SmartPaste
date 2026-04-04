@@ -18,7 +18,7 @@
             <Run FontWeight="SemiBold">SmartPaste:</Run>&#x0a;
             - Ctrl+Shift+V : Normal Mode (Letter by letter)&#x0a;
             - Ctrl+Alt+V : Word by word + SPACE Mode&#x0a;
-            - Ctrl+Win+V : Word by word + Selected separator Mode&#x0a;&#x0a;
+            - Ctrl+Win+V : Word by word + ENTER Mode&#x0a;&#x0a;
             <Run FontWeight="SemiBold">Case Converter:</Run>&#x0a;
             - Ctrl+Shift+C : Toggle case (lower/UPPER/Title/aLtErNaTiNg)&#x0a;&#x0a;
             <Run FontWeight="SemiBold">Always On Top:</Run>&#x0a;
@@ -31,12 +31,9 @@
             <CheckBox x:Name="ChkStartMinimized" Content="Start minimized to tray" Margin="0,5,0,5" Checked="ChkStartMinimized_Checked" Unchecked="ChkStartMinimized_Checked"/>
             <CheckBox x:Name="ChkAutoStart" Content="Auto-start with Windows (Copies to AppData)" Margin="0,0,0,15" Checked="ChkAutoStart_Checked" Unchecked="ChkAutoStart_Checked"/>
 
-            <TextBlock FontWeight="Bold">Split the copied list (Input) by :</TextBlock>
-            <ComboBox x:Name="CmbSeparator" Margin="0,5,0,15" SelectionChanged="CmbSeparator_SelectionChanged">
-                <ComboBoxItem Content="Enter"/>
-                <ComboBoxItem Content="Space"/>
-                <ComboBoxItem Content="Comma"/>
-            </ComboBox>
+            <TextBlock FontWeight="Normal" TextWrapping="Wrap" Margin="0,0,0,15" Foreground="#555">
+                <Run FontWeight="SemiBold">Note:</Run> SmartPaste automatically splits your copied list by commas, semicolons, dots, slashes, or newlines when pasting word-by-word.
+            </TextBlock>
 
             <TextBlock FontWeight="Bold" x:Name="TxtSpeedLabel">Typing speed : 30 ms</TextBlock>
             <Slider x:Name="SldSpeed" Minimum="0" Maximum="200" Value="30" TickFrequency="10" IsSnapToTickEnabled="True" 

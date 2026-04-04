@@ -46,12 +46,18 @@ namespace SmartPaste
                     newDataObject.SetData(DataFormats.Html, newHtml);
 
                     // Preserve other useful formats to ensure compatibility with all editors (WordPad, Text editors, etc.)
-                    string[] formatsToPreserve = { DataFormats.Rtf, DataFormats.Text, DataFormats.UnicodeText, DataFormats.StringFormat };
+                    // Exclude DataFormats.StringFormat to prevent WordPad from treating this as an OLE .NET Object.
+                    // Use autoConvert: false to avoid WPF creating additional managed object representations.
+                    string[] formatsToPreserve = { DataFormats.Rtf, DataFormats.UnicodeText, DataFormats.Text };
                     foreach (string format in formatsToPreserve)
                     {
                         if (clipboardData.GetDataPresent(format))
                         {
-                            newDataObject.SetData(format, clipboardData.GetData(format));
+                            var data = clipboardData.GetData(format);
+                            if (data != null)
+                            {
+                                newDataObject.SetData(format, data, false);
+                            }
                         }
                     }
 

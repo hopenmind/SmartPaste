@@ -9,7 +9,6 @@ namespace SmartPaste
         public bool StartMinimized { get; set; } = false;
         public bool AutoStart { get; set; } = false;
         public int DelayMilliseconds { get; set; } = 30;
-        public string SplitSeparator { get; set; } = "Enter";
     }
 
     public static class SettingsManager

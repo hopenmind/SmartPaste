@@ -16,7 +16,6 @@ namespace SmartPaste
         private InputSimulator _simulator;
 
         public int DelayMilliseconds { get; set; } = 30; // Typing speed
-        public string SplitSeparator { get; set; } = "Enter"; // "Enter", "Comma", "Space"
 
         public SmartPasteManager()
         {
@@ -102,15 +101,25 @@ namespace SmartPaste
 
         private string[] SplitText(string text)
         {
-            char[] separators;
-            if (SplitSeparator == "Comma")
-                separators = new[] { ',' };
-            else if (SplitSeparator == "Space")
-                separators = new[] { ' ' };
-            else // "Enter" default
-                return text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+            char[] delimiters = new[] 
+            { 
+                '\r', '\n', ',', ';', ':', '.', '/', '\\', '|', '•', '·', 
+                '，', '；', '：', '。', '、', '｜' 
+            };
+
+            if (text.IndexOfAny(delimiters) >= 0)
+            {
+                return text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries)
+                           .Select(s => s.Trim())
+                           .Where(s => !string.IsNullOrWhiteSpace(s))
+                           .ToArray();
+            }
             
-            return text.Split(separators, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+            // Fallback: If no strong delimiters are found, assume it's separated by spaces
+            return text.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)
+                       .Select(s => s.Trim())
+                       .Where(s => !string.IsNullOrWhiteSpace(s))
+                       .ToArray();
         }
 
         public void Dispose()
