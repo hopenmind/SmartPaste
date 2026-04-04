@@ -28,6 +28,9 @@
         </TextBlock>
 
         <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <CheckBox x:Name="ChkStartMinimized" Content="Start minimized to tray" Margin="0,5,0,5" Checked="ChkStartMinimized_Checked" Unchecked="ChkStartMinimized_Checked"/>
+            <CheckBox x:Name="ChkAutoStart" Content="Auto-start with Windows (Copies to AppData)" Margin="0,0,0,15" Checked="ChkAutoStart_Checked" Unchecked="ChkAutoStart_Checked"/>
+
             <TextBlock FontWeight="Bold">Split the copied list (Input) by :</TextBlock>
             <ComboBox x:Name="CmbSeparator" Margin="0,5,0,15" SelectionChanged="CmbSeparator_SelectionChanged">
                 <ComboBoxItem Content="Enter"/>
