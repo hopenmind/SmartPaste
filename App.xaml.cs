@@ -9,14 +9,14 @@ namespace SmartPaste;
 /// </summary>
 public partial class App : Application
 {
-    private Hardcodet.Wpf.TaskbarNotification.TaskbarIcon notifyIcon;
-    public SmartPasteManager pasteManager { get; private set; }
-    public CaseConverterManager caseConverterManager { get; private set; }
-    public AlwaysOnTopManager alwaysOnTopManager { get; private set; }
-    public SmartCopyManager smartCopyManager { get; private set; }
-    public AppSettings Settings { get; private set; }
+    private Hardcodet.Wpf.TaskbarNotification.TaskbarIcon? notifyIcon;
+    public SmartPasteManager pasteManager { get; private set; } = null!;
+    public CaseConverterManager caseConverterManager { get; private set; } = null!;
+    public AlwaysOnTopManager alwaysOnTopManager { get; private set; } = null!;
+    public SmartCopyManager smartCopyManager { get; private set; } = null!;
+    public AppSettings Settings { get; private set; } = null!;
 
-    private MainWindow _mainWindow;
+    private MainWindow? _mainWindow;
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {

@@ -37,7 +37,7 @@ namespace SmartPaste
                 IDataObject clipboardData = Clipboard.GetDataObject();
                 if (clipboardData != null && clipboardData.GetDataPresent(DataFormats.Html))
                 {
-                    string rawHtml = clipboardData.GetData(DataFormats.Html) as string;
+                    string? rawHtml = clipboardData.GetData(DataFormats.Html) as string;
                     if (string.IsNullOrEmpty(rawHtml)) return;
 
                     string newHtml = await EmbedImagesInHtmlAsync(rawHtml);
@@ -84,7 +84,7 @@ namespace SmartPaste
 
         private async Task<string> EmbedImagesInHtmlAsync(string rawHtml)
         {
-            string sourceUrl = null;
+            string? sourceUrl = null;
             var matchUrl = Regex.Match(rawHtml, @"SourceURL:(.+?)\r?\n");
             if (matchUrl.Success)
             {
@@ -130,7 +130,7 @@ namespace SmartPaste
                     // Resolve relative URLs using SourceURL
                     if (!originalSrc.StartsWith("http", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(sourceUrl))
                     {
-                        if (Uri.TryCreate(new Uri(sourceUrl), originalSrc, out Uri resultUri))
+                        if (Uri.TryCreate(new Uri(sourceUrl!), originalSrc, out Uri? resultUri))
                         {
                             absoluteUrl = resultUri.ToString();
                         }
@@ -163,7 +163,7 @@ namespace SmartPaste
                 }
             }
 
-            return GenerateCFHtml(fragment, sourceUrl);
+            return GenerateCFHtml(fragment, sourceUrl!);
         }
 
         private string GenerateCFHtml(string htmlFragment, string sourceUrl)

@@ -7,8 +7,8 @@ namespace SmartPaste
 {
     public partial class MainWindow : Window
     {
-        private SmartPasteManager _manager;
-        private AppSettings _settings;
+        private SmartPasteManager? _manager;
+        private AppSettings? _settings;
         private bool _isInitializing = true;
 
         public MainWindow()

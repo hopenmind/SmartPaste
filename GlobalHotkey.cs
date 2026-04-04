@@ -21,7 +21,7 @@ namespace SmartPaste
         private IntPtr _hWnd;
         private int _id;
 
-        public event EventHandler HotkeyPressed;
+        public event EventHandler? HotkeyPressed;
 
         public GlobalHotkey(uint modifiers, uint key, IntPtr hWnd, int id)
         {

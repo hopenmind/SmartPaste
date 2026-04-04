@@ -14,38 +14,30 @@ namespace SmartPaste
 
         public static void SetAutoStart(bool enable)
         {
-            string currentExe = Process.GetCurrentProcess().MainModule?.FileName;
+            string? currentExe = Process.GetCurrentProcess().MainModule?.FileName;
             
             if (enable)
             {
-                // Ensure the directory exists
                 if (!Directory.Exists(AppDataFolder))
                 {
                     Directory.CreateDirectory(AppDataFolder);
                 }
 
-                // If we are not already running from AppData, copy there
                 if (!string.Equals(currentExe, TargetExePath, StringComparison.OrdinalIgnoreCase))
                 {
                     try
                     {
-                        // Note: If updating, the file might be locked if another instance is running from there.
-                        // But usually, they run from download folder and copy here.
-                        File.Copy(currentExe, TargetExePath, true);
+                        if (currentExe != null) File.Copy(currentExe, TargetExePath, true);
                         
-                        // We also need to copy the associated .dlls and files if it's not a single file app.
-                        // However, since .NET 8 WPF apps usually have multiple files unless published as single file,
-                        // we should copy all files in the current exe directory to TargetExePath directory.
-                        string currentDir = Path.GetDirectoryName(currentExe);
+                        string? currentDir = Path.GetDirectoryName(currentExe);
                         if (currentDir != null)
                         {
                             foreach (var file in Directory.GetFiles(currentDir))
                             {
                                 string destFile = Path.Combine(AppDataFolder, Path.GetFileName(file));
-                                try { File.Copy(file, destFile, true); } catch { } // Ignore locked files
+                                try { File.Copy(file, destFile, true); } catch { }
                             }
                             
-                            // Also copy assets folder
                             string assetsSource = Path.Combine(currentDir, "assets");
                             string assetsDest = Path.Combine(AppDataFolder, "assets");
                             if (Directory.Exists(assetsSource))
@@ -61,21 +53,19 @@ namespace SmartPaste
                     }
                     catch (Exception ex)
                     {
-                        // Handle failure (e.g. access denied)
                         Console.WriteLine("Could not copy files: " + ex.Message);
                     }
                 }
 
                 // Add to registry
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
                 {
                     key?.SetValue(AppName, $"\"{TargetExePath}\"");
                 }
             }
             else
             {
-                // Remove from registry
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
                 {
                     key?.DeleteValue(AppName, false);
                 }
