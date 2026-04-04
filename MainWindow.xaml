@@ -1,0 +1,42 @@
+<Window x:Class="SmartPaste.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SmartPaste Settings" Height="480" Width="420"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock FontWeight="Bold" FontSize="16" Margin="0,0,0,10">Keyboard Shortcuts</TextBlock>
+        <TextBlock Grid.Row="1" Margin="0,0,0,15" TextWrapping="Wrap">
+            <Run FontWeight="SemiBold">SmartPaste:</Run>&#x0a;
+            - Ctrl+Shift+V : Normal Mode (Letter by letter)&#x0a;
+            - Ctrl+Alt+V : Word by word + SPACE Mode&#x0a;
+            - Ctrl+Win+V : Word by word + Selected separator Mode&#x0a;&#x0a;
+            <Run FontWeight="SemiBold">Case Converter:</Run>&#x0a;
+            - Ctrl+Shift+C : Toggle case (lower/UPPER/Title/aLtErNaTiNg)&#x0a;&#x0a;
+            <Run FontWeight="SemiBold">Always On Top:</Run>&#x0a;
+            - Ctrl+Alt+T : Pin/Unpin current window&#x0a;&#x0a;
+            <Run FontWeight="SemiBold">Smart Copy (Math/Image support):</Run>&#x0a;
+            - Ctrl+Win+C : Copies selection and converts Web Math to LaTeX/Markdown
+        </TextBlock>
+
+        <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <TextBlock FontWeight="Bold">Split the copied list (Input) by :</TextBlock>
+            <ComboBox x:Name="CmbSeparator" Margin="0,5,0,15" SelectionChanged="CmbSeparator_SelectionChanged">
+                <ComboBoxItem Content="Enter"/>
+                <ComboBoxItem Content="Space"/>
+                <ComboBoxItem Content="Comma"/>
+            </ComboBox>
+
+            <TextBlock FontWeight="Bold" x:Name="TxtSpeedLabel">Typing speed : 30 ms</TextBlock>
+            <Slider x:Name="SldSpeed" Minimum="0" Maximum="200" Value="30" TickFrequency="10" IsSnapToTickEnabled="True" 
+                    Margin="0,5,0,0" ValueChanged="SldSpeed_ValueChanged"/>
+        </StackPanel>
+    </Grid>
+</Window>

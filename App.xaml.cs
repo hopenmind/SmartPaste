@@ -1,0 +1,52 @@
+﻿using System.Configuration;
+using System.Data;
+using System.Windows;
+
+namespace SmartPaste;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
+{
+    private Hardcodet.Wpf.TaskbarNotification.TaskbarIcon notifyIcon;
+    public SmartPasteManager pasteManager { get; private set; }
+    public CaseConverterManager caseConverterManager { get; private set; }
+    public AlwaysOnTopManager alwaysOnTopManager { get; private set; }
+    public SmartCopyManager smartCopyManager { get; private set; }
+
+    private void Application_Startup(object sender, StartupEventArgs e)
+    {
+        notifyIcon = new Hardcodet.Wpf.TaskbarNotification.TaskbarIcon();
+        notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        notifyIcon.ToolTipText = "SmartPaste - Right click for options";
+
+        var contextMenu = new System.Windows.Controls.ContextMenu();
+        var settingsItem = new System.Windows.Controls.MenuItem { Header = "Settings" };
+        settingsItem.Click += (s, args) => new MainWindow().Show();
+        var exitItem = new System.Windows.Controls.MenuItem { Header = "Exit" };
+        exitItem.Click += (s, args) => Application.Current.Shutdown();
+        
+        contextMenu.Items.Add(settingsItem);
+        contextMenu.Items.Add(new System.Windows.Controls.Separator());
+        contextMenu.Items.Add(exitItem);
+
+        notifyIcon.ContextMenu = contextMenu;
+
+        pasteManager = new SmartPasteManager();
+        caseConverterManager = new CaseConverterManager();
+        alwaysOnTopManager = new AlwaysOnTopManager();
+        smartCopyManager = new SmartCopyManager();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        notifyIcon?.Dispose();
+        pasteManager?.Dispose();
+        caseConverterManager?.Dispose();
+        alwaysOnTopManager?.Dispose();
+        smartCopyManager?.Dispose();
+        base.OnExit(e);
+    }
+}
+
