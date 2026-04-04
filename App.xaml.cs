@@ -16,6 +16,7 @@ public partial class App : Application
 
     private MainWindow? _mainWindow;
     private IntPtr _hwnd;
+    private GlobalHotkey? teleworkHotkey;
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
@@ -102,6 +103,14 @@ public partial class App : Application
             alwaysOnTopManager.UnregisterHotkey();
         }
 
+        // Telework shortcut (opens settings to Telework tab)
+        teleworkHotkey?.Dispose();
+        if (ShortcutParser.TryParse(Settings.TeleworkShortcut, out uint teleMods, out var teleKeyCode))
+        {
+            teleworkHotkey = new GlobalHotkey(teleMods, (uint)teleKeyCode, _hwnd, 99);
+            teleworkHotkey.HotkeyPressed += (s, e) => TeleworkShortcutPressed();
+        }
+
         // Apply telework settings
         pasteManager.DelayMilliseconds = Settings.DelayMilliseconds;
         pasteManager.TeleVariableRhythm = Settings.TeleVariableRhythm;
@@ -126,6 +135,11 @@ public partial class App : Application
 
     private void ShowMainWindow()
     {
+        ShowMainWindowToTab(0);
+    }
+
+    private void ShowMainWindowToTab(int tabIndex)
+    {
         if (_mainWindow == null)
         {
             _mainWindow = new MainWindow();
@@ -136,6 +150,12 @@ public partial class App : Application
         {
             _mainWindow.WindowState = WindowState.Normal;
         }
+        _mainWindow.SwitchToTab(tabIndex);
+    }
+
+    private void TeleworkShortcutPressed()
+    {
+        Application.Current.Dispatcher.BeginInvoke(new Action(() => ShowMainWindowToTab(1)));
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -145,6 +165,7 @@ public partial class App : Application
         caseConverterManager?.Dispose();
         alwaysOnTopManager?.Dispose();
         smartCopyManager?.Dispose();
+        teleworkHotkey?.Dispose();
         base.OnExit(e);
     }
 }

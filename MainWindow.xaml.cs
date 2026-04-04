@@ -1,6 +1,11 @@
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Navigation;
 
@@ -10,6 +15,38 @@ namespace SmartPaste
     {
         private AppSettings? _settings;
         private bool _isInitializing = true;
+        private Border? _activeShortcutBorder;
+        private HashSet<string> _pressedKeys = new();
+        private bool _isCapturing;
+
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_SYSKEYDOWN = 0x0104;
+        private const int WM_KEYUP = 0x0101;
+        private const int WM_SYSKEYUP = 0x0105;
+
+        private static readonly Dictionary<int, string> VKeyToName = new()
+        {
+            { 0x10, "Shift" }, { 0x11, "Ctrl" }, { 0x12, "Alt" },
+            { 0x5B, "Win" }, { 0x5C, "Win" },
+            { 0x41, "A" }, { 0x42, "B" }, { 0x43, "C" }, { 0x44, "D" },
+            { 0x45, "E" }, { 0x46, "F" }, { 0x47, "G" }, { 0x48, "H" },
+            { 0x49, "I" }, { 0x4A, "J" }, { 0x4B, "K" }, { 0x4C, "L" },
+            { 0x4D, "M" }, { 0x4E, "N" }, { 0x4F, "O" }, { 0x50, "P" },
+            { 0x51, "Q" }, { 0x52, "R" }, { 0x53, "S" }, { 0x54, "T" },
+            { 0x55, "U" }, { 0x56, "V" }, { 0x57, "W" }, { 0x58, "X" },
+            { 0x59, "Y" }, { 0x5A, "Z" },
+            { 0x30, "0" }, { 0x31, "1" }, { 0x32, "2" }, { 0x33, "3" },
+            { 0x34, "4" }, { 0x35, "5" }, { 0x36, "6" }, { 0x37, "7" },
+            { 0x38, "8" }, { 0x39, "9" },
+            { 0x70, "F1" }, { 0x71, "F2" }, { 0x72, "F3" }, { 0x73, "F4" },
+            { 0x74, "F5" }, { 0x75, "F6" }, { 0x76, "F7" }, { 0x77, "F8" },
+            { 0x78, "F9" }, { 0x79, "F10" }, { 0x7A, "F11" }, { 0x7B, "F12" },
+            { 0x20, "Space" }, { 0x0D, "Enter" }, { 0x09, "Tab" },
+            { 0x1B, "Escape" }, { 0x08, "Backspace" }, { 0x2E, "Delete" },
+            { 0x24, "Home" }, { 0x23, "End" }, { 0x21, "PageUp" },
+            { 0x22, "PageDown" }, { 0x2D, "Insert" },
+            { 0x25, "Left" }, { 0x26, "Up" }, { 0x27, "Right" }, { 0x28, "Down" },
+        };
 
         public MainWindow()
         {
@@ -20,54 +57,218 @@ namespace SmartPaste
 
             if (_settings != null)
             {
-                // Startup
                 ChkStartMinimized.IsChecked = _settings.StartMinimized;
                 ChkAutoStart.IsChecked = _settings.AutoStart;
 
-                // Function toggles
                 ChkEnableSP.IsChecked = _settings.EnableSmartPaste;
                 ChkEnableSC.IsChecked = _settings.EnableSmartCopy;
                 ChkEnableCC.IsChecked = _settings.EnableCaseConverter;
                 ChkEnableAOT.IsChecked = _settings.EnableAlwaysOnTop;
 
-                // Shortcuts
                 TxtSP1.Text = _settings.SmartPasteShortcut1;
                 TxtSP2.Text = _settings.SmartPasteShortcut2;
                 TxtSP3.Text = _settings.SmartPasteShortcut3;
                 TxtSC.Text = _settings.SmartCopyShortcut;
                 TxtCC.Text = _settings.CaseConverterShortcut;
                 TxtAOT.Text = _settings.AlwaysOnTopShortcut;
+                TxtTele.Text = _settings.TeleworkShortcut;
 
-                // Telework core
                 ChkTeleVariable.IsChecked = _settings.TeleVariableRhythm;
                 ChkTeleMicroPauses.IsChecked = _settings.TeleMicroPauses;
                 ChkTeleFlowBursts.IsChecked = _settings.TeleFlowBursts;
                 ChkTeleBreathing.IsChecked = _settings.TeleBreathingPauses;
                 ChkTeleEndOfLine.IsChecked = _settings.TeleEndOfLinePause;
 
-                // Telework errors
                 ChkTeleTypos.IsChecked = _settings.TeleRealisticTypos;
                 ChkTeleCapsErrors.IsChecked = _settings.TeleRandomCapsErrors;
                 ChkTeleDoubleKey.IsChecked = _settings.TeleDoubleKeyStrokes;
                 ChkTeleCursorNav.IsChecked = _settings.TeleCursorNavigation;
                 ChkTeleAutoCorrect.IsChecked = _settings.TeleAutoCorrectMistakes;
 
-                // Telework timing
                 SldTeleDelay.Value = _settings.TelePasteDelay;
                 SldTeleChunk.Value = _settings.TeleWordChunkSize;
                 SldTeleBreath.Value = _settings.TeleBreathingInterval;
 
-                // Typing speed
                 SldSpeed.Value = _settings.DelayMilliseconds;
             }
 
             _isInitializing = false;
+
+            ComponentDispatcher.ThreadPreprocessMessage += ThreadPreprocessMessage;
+        }
+
+        private void ThreadPreprocessMessage(ref MSG msg, ref bool handled)
+        {
+            if (!_isCapturing) return;
+
+            if (msg.message == WM_KEYDOWN || msg.message == WM_SYSKEYDOWN)
+            {
+                int vKey = (int)msg.wParam & 0xFFFF;
+                if (VKeyToName.TryGetValue(vKey, out var name))
+                {
+                    _pressedKeys.Add(name);
+                    UpdateShortcutDisplay();
+                }
+                handled = true;
+            }
+            else if (msg.message == WM_KEYUP || msg.message == WM_SYSKEYUP)
+            {
+                int vKey = (int)msg.wParam & 0xFFFF;
+                if (VKeyToName.TryGetValue(vKey, out var name))
+                {
+                    _pressedKeys.Remove(name);
+                }
+
+                if (_pressedKeys.Count == 0)
+                {
+                    SaveCurrentShortcut();
+                    ExitCaptureMode();
+                }
+                handled = true;
+            }
+        }
+
+        private void ShortcutBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border)
+            {
+                if (_isCapturing) ExitCaptureMode();
+
+                _activeShortcutBorder = border;
+                _pressedKeys.Clear();
+                _isCapturing = true;
+
+                border.BorderBrush = new SolidColorBrush(Color.FromRgb(30, 64, 175));
+                border.BorderThickness = new Thickness(2);
+
+                var grid = border.Child as Grid;
+                if (grid != null)
+                {
+                    var textBlock = grid.Children.OfType<TextBlock>().FirstOrDefault();
+                    var image = grid.Children.OfType<Image>().FirstOrDefault();
+                    if (textBlock != null) textBlock.Visibility = Visibility.Collapsed;
+                    if (image != null) image.Visibility = Visibility.Visible;
+                }
+
+                TxtShortcutError.Visibility = Visibility.Collapsed;
+                e.Handled = true;
+            }
+        }
+
+        private void UpdateShortcutDisplay()
+        {
+            if (_activeShortcutBorder == null) return;
+            var grid = _activeShortcutBorder.Child as Grid;
+            if (grid == null) return;
+
+            var textBlock = grid.Children.OfType<TextBlock>().FirstOrDefault();
+            var image = grid.Children.OfType<Image>().FirstOrDefault();
+            if (textBlock == null) return;
+
+            if (_pressedKeys.Count > 0)
+            {
+                textBlock.Text = string.Join(" + ", _pressedKeys);
+                textBlock.Visibility = Visibility.Visible;
+                if (image != null) image.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                textBlock.Visibility = Visibility.Collapsed;
+                if (image != null) image.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void SaveCurrentShortcut()
+        {
+            if (_settings == null || _activeShortcutBorder == null) return;
+
+            var orderedKeys = new List<string>();
+            string? mainKey = null;
+
+            foreach (var k in _pressedKeys)
+            {
+                if (k == "Ctrl" || k == "Shift" || k == "Alt" || k == "Win")
+                    orderedKeys.Add(k);
+                else
+                    mainKey = k;
+            }
+
+            if (mainKey != null)
+            {
+                orderedKeys.Add(mainKey);
+                var shortcutText = string.Join("+", orderedKeys);
+
+                if (ShortcutParser.TryParse(shortcutText, out _, out _))
+                {
+                    TxtShortcutError.Visibility = Visibility.Collapsed;
+
+                    if (_activeShortcutBorder == BorderSP1) { _settings.SmartPasteShortcut1 = shortcutText; TxtSP1.Text = shortcutText; }
+                    else if (_activeShortcutBorder == BorderSP2) { _settings.SmartPasteShortcut2 = shortcutText; TxtSP2.Text = shortcutText; }
+                    else if (_activeShortcutBorder == BorderSP3) { _settings.SmartPasteShortcut3 = shortcutText; TxtSP3.Text = shortcutText; }
+                    else if (_activeShortcutBorder == BorderSC) { _settings.SmartCopyShortcut = shortcutText; TxtSC.Text = shortcutText; }
+                    else if (_activeShortcutBorder == BorderCC) { _settings.CaseConverterShortcut = shortcutText; TxtCC.Text = shortcutText; }
+                    else if (_activeShortcutBorder == BorderAOT) { _settings.AlwaysOnTopShortcut = shortcutText; TxtAOT.Text = shortcutText; }
+                    else if (_activeShortcutBorder == BorderTele) { _settings.TeleworkShortcut = shortcutText; TxtTele.Text = shortcutText; }
+
+                    Save();
+                    ((App)Application.Current).RefreshHotkeys();
+                }
+                else
+                {
+                    TxtShortcutError.Text = "Invalid shortcut. At least one modifier (Ctrl/Alt/Shift/Win) and one key are required.";
+                    TxtShortcutError.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                TxtShortcutError.Text = "Invalid shortcut. At least one modifier and one key are required.";
+                TxtShortcutError.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void ExitCaptureMode()
+        {
+            _isCapturing = false;
+            _pressedKeys.Clear();
+
+            if (_activeShortcutBorder != null)
+            {
+                _activeShortcutBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(156, 163, 175));
+                _activeShortcutBorder.BorderThickness = new Thickness(1);
+
+                var grid = _activeShortcutBorder.Child as Grid;
+                if (grid != null)
+                {
+                    var textBlock = grid.Children.OfType<TextBlock>().FirstOrDefault();
+                    var image = grid.Children.OfType<Image>().FirstOrDefault();
+                    if (textBlock != null && string.IsNullOrEmpty(textBlock.Text))
+                    {
+                        textBlock.Visibility = Visibility.Collapsed;
+                        if (image != null) image.Visibility = Visibility.Visible;
+                    }
+                }
+
+                _activeShortcutBorder = null;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            ComponentDispatcher.ThreadPreprocessMessage -= ThreadPreprocessMessage;
             e.Cancel = true;
             this.Hide();
+        }
+
+        public void SwitchToTab(int index)
+        {
+            if (this.Content is Grid grid)
+            {
+                var tabControl = grid.Children.OfType<TabControl>().FirstOrDefault();
+                if (tabControl != null && index >= 0 && index < tabControl.Items.Count)
+                {
+                    tabControl.SelectedIndex = index;
+                }
+            }
         }
 
         private void Save()
@@ -75,7 +276,6 @@ namespace SmartPaste
             if (_settings != null) SettingsManager.Save(_settings);
         }
 
-        // --- Startup ---
         private void ChkStartMinimized_Checked(object sender, RoutedEventArgs e)
         {
             if (_isInitializing || _settings == null || !ChkStartMinimized.IsChecked.HasValue) return;
@@ -91,7 +291,6 @@ namespace SmartPaste
             AutoStartManager.SetAutoStart(_settings.AutoStart);
         }
 
-        // --- Function Toggles ---
         private void Func_Changed(object sender, RoutedEventArgs e)
         {
             if (_isInitializing || _settings == null) return;
@@ -103,40 +302,6 @@ namespace SmartPaste
             ((App)Application.Current).RefreshHotkeys();
         }
 
-        // --- Shortcut Editing ---
-        private void TxtShortcut_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_isInitializing || _settings == null) return;
-
-            bool allValid = true;
-            TxtShortcutError.Visibility = Visibility.Collapsed;
-
-            if (TrySetShortcut(TxtSP1.Text, s => _settings!.SmartPasteShortcut1 = s, out bool v1)) allValid &= v1;
-            if (TrySetShortcut(TxtSP2.Text, s => _settings!.SmartPasteShortcut2 = s, out bool v2)) allValid &= v2;
-            if (TrySetShortcut(TxtSP3.Text, s => _settings!.SmartPasteShortcut3 = s, out bool v3)) allValid &= v3;
-            if (TrySetShortcut(TxtSC.Text, s => _settings!.SmartCopyShortcut = s, out bool v4)) allValid &= v4;
-            if (TrySetShortcut(TxtCC.Text, s => _settings!.CaseConverterShortcut = s, out bool v5)) allValid &= v5;
-            if (TrySetShortcut(TxtAOT.Text, s => _settings!.AlwaysOnTopShortcut = s, out bool v6)) allValid &= v6;
-
-            if (!allValid)
-            {
-                TxtShortcutError.Text = "Invalid shortcut format. Use: Ctrl+Shift+V, Alt+F1, Ctrl+Win+C, etc.";
-                TxtShortcutError.Visibility = Visibility.Visible;
-            }
-
-            Save();
-            ((App)Application.Current).RefreshHotkeys();
-        }
-
-        private bool TrySetShortcut(string text, System.Action<string> setter, out bool valid)
-        {
-            if (string.IsNullOrWhiteSpace(text)) { valid = false; return false; }
-            valid = ShortcutParser.TryParse(text, out _, out _);
-            if (valid) setter(text);
-            return true;
-        }
-
-        // --- Telework ---
         private void Tele_Changed(object sender, RoutedEventArgs e)
         {
             if (_isInitializing || _settings == null) return;
@@ -177,7 +342,6 @@ namespace SmartPaste
             Save();
         }
 
-        // --- Typing Speed ---
         private void SldSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (_isInitializing) return;
@@ -193,7 +357,6 @@ namespace SmartPaste
             }
         }
 
-        // --- Reset ---
         private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
             _settings = new AppSettings();
@@ -212,6 +375,7 @@ namespace SmartPaste
             TxtSC.Text = "Ctrl+Shift+C";
             TxtCC.Text = "Ctrl+Win+C";
             TxtAOT.Text = "Ctrl+Alt+T";
+            TxtTele.Text = "Ctrl+Shift+T";
 
             ChkTeleVariable.IsChecked = true;
             ChkTeleMicroPauses.IsChecked = true;

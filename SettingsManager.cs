@@ -26,6 +26,7 @@ namespace SmartPaste
         public string SmartCopyShortcut { get; set; } = "Ctrl+Shift+C";
         public string CaseConverterShortcut { get; set; } = "Ctrl+Win+C";
         public string AlwaysOnTopShortcut { get; set; } = "Ctrl+Alt+T";
+        public string TeleworkShortcut { get; set; } = "Ctrl+Shift+T";
 
         // Telework: Core
         public bool TeleVariableRhythm { get; set; } = true;
