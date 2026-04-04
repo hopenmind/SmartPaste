@@ -43,6 +43,8 @@ public partial class App : Application
         if (Settings != null)
         {
             pasteManager.DelayMilliseconds = Settings.DelayMilliseconds;
+            pasteManager.HumanSimulation = Settings.HumanSimulation;
+            pasteManager.HumanTypos = Settings.HumanTypos;
         }
 
         caseConverterManager = new CaseConverterManager();

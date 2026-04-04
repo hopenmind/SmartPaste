@@ -17,8 +17,8 @@ namespace SmartPaste
             _simulator = new InputSimulator();
             var hwnd = new System.Windows.Interop.WindowInteropHelper(Application.Current.MainWindow ?? new Window()).EnsureHandle();
             
-            // Ctrl + Shift + C
-            _hotkey = new GlobalHotkey(GlobalHotkey.MOD_CONTROL | GlobalHotkey.MOD_SHIFT, (uint)VirtualKeyCode.VK_C, hwnd, 9004);
+            // Ctrl + Win + C
+            _hotkey = new GlobalHotkey(GlobalHotkey.MOD_CONTROL | GlobalHotkey.MOD_WIN, (uint)VirtualKeyCode.VK_C, hwnd, 9004);
             _hotkey.HotkeyPressed += (s, e) => ToggleCase();
         }
 

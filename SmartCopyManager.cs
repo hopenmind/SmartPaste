@@ -20,8 +20,8 @@ namespace SmartPaste
             _simulator = new InputSimulator();
             var hwnd = new System.Windows.Interop.WindowInteropHelper(Application.Current.MainWindow ?? new Window()).EnsureHandle();
             
-            // Ctrl + Win + C (Smart Copy - Base64 Embed)
-            _hotkey = new GlobalHotkey(GlobalHotkey.MOD_CONTROL | GlobalHotkey.MOD_WIN, (uint)VirtualKeyCode.VK_C, hwnd, 9006);
+            // Ctrl + Shift + C (Smart Copy - Base64 Embed)
+            _hotkey = new GlobalHotkey(GlobalHotkey.MOD_CONTROL | GlobalHotkey.MOD_SHIFT, (uint)VirtualKeyCode.VK_C, hwnd, 9006);
             _hotkey.HotkeyPressed += (s, e) => PerformSmartCopy();
         }
 
@@ -30,40 +30,55 @@ namespace SmartPaste
             // Simulate normal copy (Ctrl+C)
             _simulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_C);
             
-            await Task.Delay(200); // Give OS time to copy to clipboard
+            await Task.Delay(300); // Give OS time to copy to clipboard
             
-            IDataObject clipboardData = Clipboard.GetDataObject();
-            if (clipboardData != null && clipboardData.GetDataPresent(DataFormats.Html))
+            try
             {
-                string rawHtml = clipboardData.GetData(DataFormats.Html) as string;
-                if (string.IsNullOrEmpty(rawHtml)) return;
-
-                string newHtml = await EmbedImagesInHtmlAsync(rawHtml);
-                
-                if (!string.IsNullOrWhiteSpace(newHtml))
+                IDataObject clipboardData = Clipboard.GetDataObject();
+                if (clipboardData != null && clipboardData.GetDataPresent(DataFormats.Html))
                 {
-                    DataObject newDataObject = new DataObject();
-                    newDataObject.SetData(DataFormats.Html, newHtml);
+                    string rawHtml = clipboardData.GetData(DataFormats.Html) as string;
+                    if (string.IsNullOrEmpty(rawHtml)) return;
 
-                    // Preserve other useful formats to ensure compatibility with all editors (WordPad, Text editors, etc.)
-                    // Exclude DataFormats.StringFormat to prevent WordPad from treating this as an OLE .NET Object.
-                    // Use autoConvert: false to avoid WPF creating additional managed object representations.
-                    string[] formatsToPreserve = { DataFormats.Rtf, DataFormats.UnicodeText, DataFormats.Text };
-                    foreach (string format in formatsToPreserve)
+                    string newHtml = await EmbedImagesInHtmlAsync(rawHtml);
+                    
+                    if (!string.IsNullOrWhiteSpace(newHtml))
                     {
-                        if (clipboardData.GetDataPresent(format))
+                        // To avoid locking issues and OLE Wrapper problems, we clear and precisely set what we need
+                        for (int i = 0; i < 5; i++)
                         {
-                            var data = clipboardData.GetData(format);
-                            if (data != null)
+                            try
                             {
-                                newDataObject.SetData(format, data, false);
+                                DataObject newDataObject = new DataObject();
+                                newDataObject.SetData(DataFormats.Html, newHtml);
+
+                                if (clipboardData.GetDataPresent(DataFormats.Rtf))
+                                {
+                                    newDataObject.SetData(DataFormats.Rtf, clipboardData.GetData(DataFormats.Rtf));
+                                }
+                                if (clipboardData.GetDataPresent(DataFormats.UnicodeText))
+                                {
+                                    newDataObject.SetData(DataFormats.UnicodeText, clipboardData.GetData(DataFormats.UnicodeText));
+                                }
+                                else if (clipboardData.GetDataPresent(DataFormats.Text))
+                                {
+                                    newDataObject.SetData(DataFormats.Text, clipboardData.GetData(DataFormats.Text));
+                                }
+
+                                Clipboard.SetDataObject(newDataObject, true);
+                                break; // Success
+                            }
+                            catch (System.Runtime.InteropServices.COMException)
+                            {
+                                await Task.Delay(100); // Retry if clipboard is locked
                             }
                         }
                     }
-
-                    // Update clipboard with modified HTML containing Base64 embedded images + preserved formats
-                    Clipboard.SetDataObject(newDataObject, true);
                 }
+            }
+            catch
+            {
+                // Suppress exception to not crash the background tool
             }
         }
 

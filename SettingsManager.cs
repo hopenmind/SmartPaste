@@ -9,6 +9,8 @@ namespace SmartPaste
         public bool StartMinimized { get; set; } = false;
         public bool AutoStart { get; set; } = false;
         public int DelayMilliseconds { get; set; } = 30;
+        public bool HumanSimulation { get; set; } = false;
+        public bool HumanTypos { get; set; } = false;
     }
 
     public static class SettingsManager

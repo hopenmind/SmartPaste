@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 
 namespace SmartPaste
 {
@@ -13,7 +15,6 @@ namespace SmartPaste
         {
             InitializeComponent();
             
-            // Get manager and settings from App
             var app = (App)Application.Current;
             _manager = app.pasteManager;
             _settings = app.Settings;
@@ -22,11 +23,14 @@ namespace SmartPaste
             {
                 ChkStartMinimized.IsChecked = _settings.StartMinimized;
                 ChkAutoStart.IsChecked = _settings.AutoStart;
+                ChkHumanSim.IsChecked = _settings.HumanSimulation;
+                ChkTypos.IsChecked = _settings.HumanTypos;
+                SldSpeed.Value = _settings.DelayMilliseconds;
             }
 
             if (_manager != null)
             {
-                SldSpeed.Value = _manager.DelayMilliseconds;
+                _manager.DelayMilliseconds = (int)SldSpeed.Value;
             }
             
             _isInitializing = false;
@@ -59,23 +63,78 @@ namespace SmartPaste
             }
         }
 
+        private void ChkHumanSim_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_isInitializing) return;
+            if (_settings != null && ChkHumanSim.IsChecked.HasValue)
+            {
+                _settings.HumanSimulation = ChkHumanSim.IsChecked.Value;
+                SettingsManager.Save(_settings);
+                if (_manager != null)
+                {
+                    _manager.HumanSimulation = _settings.HumanSimulation;
+                }
+            }
+        }
+
+        private void ChkTypos_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_isInitializing) return;
+            if (_settings != null && ChkTypos.IsChecked.HasValue)
+            {
+                _settings.HumanTypos = ChkTypos.IsChecked.Value;
+                SettingsManager.Save(_settings);
+                if (_manager != null)
+                {
+                    _manager.HumanTypos = _settings.HumanTypos;
+                }
+            }
+        }
+
         private void SldSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (_isInitializing) return;
+            int val = (int)e.NewValue;
             if (_manager != null)
             {
-                int val = (int)e.NewValue;
                 _manager.DelayMilliseconds = val;
-                if (_settings != null)
-                {
-                    _settings.DelayMilliseconds = val;
-                    SettingsManager.Save(_settings);
-                }
+            }
+            if (_settings != null)
+            {
+                _settings.DelayMilliseconds = val;
+                SettingsManager.Save(_settings);
             }
             if (TxtSpeedLabel != null)
             {
-                TxtSpeedLabel.Text = $"Typing speed : {(int)e.NewValue} ms";
+                TxtSpeedLabel.Text = $"Base delay: {val} ms";
             }
+        }
+
+        private void BtnReset_Click(object sender, RoutedEventArgs e)
+        {
+            _settings = new AppSettings();
+            SettingsManager.Save(_settings);
+
+            ChkStartMinimized.IsChecked = false;
+            ChkAutoStart.IsChecked = false;
+            ChkHumanSim.IsChecked = false;
+            ChkTypos.IsChecked = false;
+            SldSpeed.Value = 30;
+
+            if (_manager != null)
+            {
+                _manager.DelayMilliseconds = 30;
+                _manager.HumanSimulation = false;
+                _manager.HumanTypos = false;
+            }
+
+            AutoStartManager.SetAutoStart(false);
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
         }
     }
 }
