@@ -71,4 +71,4 @@ Please read our [Security Policy](SECURITY.md) for reporting vulnerabilities.
 This software is provided free of charge for personal use. However, no right of exploitation, distribution, modification, or commercial use is granted without a prior written license agreement. See the [LICENSE](LICENSE) file for more details.
 
 ---
-*Created with ❤️ by [Hope 'n Mind](https://www.hopenmind.com).*
+*Created by the autists and psychopaths at [Hope 'n Mind](https://www.hopenmind.com).*
