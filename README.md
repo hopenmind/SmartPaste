@@ -32,9 +32,9 @@ Pin any window to stay above all other windows.
 - Select a window, press the shortcut, and it stays on top. Press again to unpin.
 
 ### 4. Smart Copy (`Ctrl`+`Win`+`C`)
-Copies exact visual layouts from web pages—including complex math equations (MathML/MathJax) and images—by embedding them as Base64.
-- Say goodbye to broken LaTeX when pasting into Word or Notion!
-- Captures the exact fidelity of the original document.
+Smart Copy automatically detects rendered equations and images (SVG/PNG) in documents and converts them into Base64 blocks, preserving exact visual fidelity when pasting into tools like Word, Notion, or email clients.
+
+*You no longer have to fight with formats — you copy what you see, you paste what you saw.*
 
 ## 🛠️ Installation
 

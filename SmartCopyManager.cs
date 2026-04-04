@@ -32,15 +32,31 @@ namespace SmartPaste
             
             await Task.Delay(200); // Give OS time to copy to clipboard
             
-            if (Clipboard.ContainsText(TextDataFormat.Html))
+            IDataObject clipboardData = Clipboard.GetDataObject();
+            if (clipboardData != null && clipboardData.GetDataPresent(DataFormats.Html))
             {
-                string rawHtml = Clipboard.GetText(TextDataFormat.Html);
+                string rawHtml = clipboardData.GetData(DataFormats.Html) as string;
+                if (string.IsNullOrEmpty(rawHtml)) return;
+
                 string newHtml = await EmbedImagesInHtmlAsync(rawHtml);
                 
                 if (!string.IsNullOrWhiteSpace(newHtml))
                 {
-                    // Update clipboard with modified HTML containing Base64 embedded images
-                    Clipboard.SetDataObject(new DataObject(DataFormats.Html, newHtml), true);
+                    DataObject newDataObject = new DataObject();
+                    newDataObject.SetData(DataFormats.Html, newHtml);
+
+                    // Preserve other useful formats to ensure compatibility with all editors (WordPad, Text editors, etc.)
+                    string[] formatsToPreserve = { DataFormats.Rtf, DataFormats.Text, DataFormats.UnicodeText, DataFormats.StringFormat };
+                    foreach (string format in formatsToPreserve)
+                    {
+                        if (clipboardData.GetDataPresent(format))
+                        {
+                            newDataObject.SetData(format, clipboardData.GetData(format));
+                        }
+                    }
+
+                    // Update clipboard with modified HTML containing Base64 embedded images + preserved formats
+                    Clipboard.SetDataObject(newDataObject, true);
                 }
             }
         }
@@ -60,6 +76,21 @@ namespace SmartPaste
             {
                 fragment = matchFrag.Groups[1].Value;
             }
+
+            // Convert inline SVGs (often used by MathJax for equations) to Base64 embedded img tags
+            fragment = Regex.Replace(fragment, @"<svg[^>]*>.*?</svg>", matchSvg =>
+            {
+                try
+                {
+                    string svgContent = matchSvg.Value;
+                    string base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(svgContent));
+                    return $"<img src=\"data:image/svg+xml;base64,{base64}\" alt=\"SVG/Math\" />";
+                }
+                catch
+                {
+                    return matchSvg.Value;
+                }
+            }, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
             // Find all image tags and their src attributes
             string pattern = @"<img[^>]+src\s*=\s*[""']([^""']+)[""'][^>]*>";
