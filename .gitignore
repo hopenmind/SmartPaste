@@ -60,3 +60,6 @@ project.lock.json
 *.appxrecipe
 *.builds
 *.ipch
+
+# Local project documentation (navigation guide for developers)
+PROJECT_REPORT.md

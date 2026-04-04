@@ -36,15 +36,22 @@ namespace SmartPaste
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_TOPMOST = 0x00000008;
 
-        private GlobalHotkey _hotkey;
+        private GlobalHotkey? _hotkey;
 
-        public AlwaysOnTopManager()
+        public void RegisterHotkey(IntPtr hwnd, string shortcut)
         {
-            var hwnd = new System.Windows.Interop.WindowInteropHelper(Application.Current.MainWindow ?? new Window()).EnsureHandle();
-            
-            // Ctrl + Alt + T
-            _hotkey = new GlobalHotkey(GlobalHotkey.MOD_CONTROL | GlobalHotkey.MOD_ALT, (uint)VirtualKeyCode.VK_T, hwnd, 9005);
-            _hotkey.HotkeyPressed += (s, e) => ToggleAlwaysOnTop();
+            UnregisterHotkey();
+            if (ShortcutParser.TryParse(shortcut, out uint modifiers, out VirtualKeyCode key))
+            {
+                _hotkey = new GlobalHotkey(modifiers, (uint)key, hwnd, 9005);
+                _hotkey.HotkeyPressed += (s, e) => ToggleAlwaysOnTop();
+            }
+        }
+
+        public void UnregisterHotkey()
+        {
+            _hotkey?.Dispose();
+            _hotkey = null;
         }
 
         private void ToggleAlwaysOnTop()
@@ -62,7 +69,7 @@ namespace SmartPaste
 
         public void Dispose()
         {
-            _hotkey?.Dispose();
+            UnregisterHotkey();
         }
     }
 }

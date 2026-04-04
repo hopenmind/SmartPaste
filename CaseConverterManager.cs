@@ -9,37 +9,42 @@ namespace SmartPaste
 {
     public class CaseConverterManager : IDisposable
     {
-        private GlobalHotkey _hotkey;
-        private InputSimulator _simulator;
+        private GlobalHotkey? _hotkey;
+        private InputSimulator _simulator = new InputSimulator();
 
-        public CaseConverterManager()
+        public void RegisterHotkey(IntPtr hwnd, string shortcut)
         {
-            _simulator = new InputSimulator();
-            var hwnd = new System.Windows.Interop.WindowInteropHelper(Application.Current.MainWindow ?? new Window()).EnsureHandle();
-            
-            // Ctrl + Win + C
-            _hotkey = new GlobalHotkey(GlobalHotkey.MOD_CONTROL | GlobalHotkey.MOD_WIN, (uint)VirtualKeyCode.VK_C, hwnd, 9004);
-            _hotkey.HotkeyPressed += (s, e) => ToggleCase();
+            UnregisterHotkey();
+            if (ShortcutParser.TryParse(shortcut, out uint modifiers, out VirtualKeyCode key))
+            {
+                _hotkey = new GlobalHotkey(modifiers, (uint)key, hwnd, 9004);
+                _hotkey.HotkeyPressed += (s, e) => ToggleCase();
+            }
+        }
+
+        public void UnregisterHotkey()
+        {
+            _hotkey?.Dispose();
+            _hotkey = null;
         }
 
         private async void ToggleCase()
         {
-            // Simulate Ctrl+C
+            _simulator ??= new InputSimulator();
             _simulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_C);
-            
-            await Task.Delay(100); // Wait for copy to clipboard
-            
+            await Task.Delay(100);
+
             string text = string.Empty;
             if (Clipboard.ContainsText())
             {
                 text = Clipboard.GetText();
             }
-            
+
             if (!string.IsNullOrEmpty(text))
             {
                 string newText = text;
                 string titleCase = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
-                
+
                 if (text == text.ToLower())
                 {
                     newText = text.ToUpper();
@@ -50,7 +55,6 @@ namespace SmartPaste
                 }
                 else if (text == titleCase)
                 {
-                    // Alternating case (SpongeBob case)
                     char[] chars = text.ToCharArray();
                     bool upper = false;
                     for (int i = 0; i < chars.Length; i++)
@@ -67,17 +71,16 @@ namespace SmartPaste
                 {
                     newText = text.ToLower();
                 }
-                
+
                 Clipboard.SetText(newText);
                 await Task.Delay(50);
-                
                 _simulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
             }
         }
 
         public void Dispose()
         {
-            _hotkey?.Dispose();
+            UnregisterHotkey();
         }
     }
 }

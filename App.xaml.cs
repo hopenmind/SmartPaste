@@ -1,12 +1,10 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace SmartPaste;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application
 {
     private Hardcodet.Wpf.TaskbarNotification.TaskbarIcon? notifyIcon;
@@ -17,6 +15,7 @@ public partial class App : Application
     public AppSettings Settings { get; private set; } = null!;
 
     private MainWindow? _mainWindow;
+    private IntPtr _hwnd;
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
@@ -39,17 +38,16 @@ public partial class App : Application
         notifyIcon.ContextMenu = contextMenu;
         notifyIcon.TrayMouseDoubleClick += (s, args) => ShowMainWindow();
 
-        pasteManager = new SmartPasteManager();
-        if (Settings != null)
-        {
-            pasteManager.DelayMilliseconds = Settings.DelayMilliseconds;
-            pasteManager.HumanSimulation = Settings.HumanSimulation;
-            pasteManager.HumanTypos = Settings.HumanTypos;
-        }
+        // Create hidden window to get hwnd
+        var hiddenWindow = new Window();
+        _hwnd = new WindowInteropHelper(hiddenWindow).EnsureHandle();
 
+        pasteManager = new SmartPasteManager();
         caseConverterManager = new CaseConverterManager();
         alwaysOnTopManager = new AlwaysOnTopManager();
         smartCopyManager = new SmartCopyManager();
+
+        RegisterAllHotkeys();
 
         _mainWindow = new MainWindow();
 
@@ -57,6 +55,73 @@ public partial class App : Application
         {
             ShowMainWindow();
         }
+    }
+
+    private void RegisterAllHotkeys()
+    {
+        // Smart Paste (only if enabled)
+        if (Settings.EnableSmartPaste)
+        {
+            pasteManager.RegisterHotkeys(_hwnd,
+                Settings.SmartPasteShortcut1,
+                Settings.SmartPasteShortcut2,
+                Settings.SmartPasteShortcut3);
+        }
+        else
+        {
+            pasteManager.UnregisterHotkeys();
+        }
+
+        // Smart Copy
+        if (Settings.EnableSmartCopy)
+        {
+            smartCopyManager.RegisterHotkey(_hwnd, Settings.SmartCopyShortcut);
+        }
+        else
+        {
+            smartCopyManager.UnregisterHotkey();
+        }
+
+        // Case Converter
+        if (Settings.EnableCaseConverter)
+        {
+            caseConverterManager.RegisterHotkey(_hwnd, Settings.CaseConverterShortcut);
+        }
+        else
+        {
+            caseConverterManager.UnregisterHotkey();
+        }
+
+        // Always On Top
+        if (Settings.EnableAlwaysOnTop)
+        {
+            alwaysOnTopManager.RegisterHotkey(_hwnd, Settings.AlwaysOnTopShortcut);
+        }
+        else
+        {
+            alwaysOnTopManager.UnregisterHotkey();
+        }
+
+        // Apply telework settings
+        pasteManager.DelayMilliseconds = Settings.DelayMilliseconds;
+        pasteManager.TeleVariableRhythm = Settings.TeleVariableRhythm;
+        pasteManager.TeleMicroPauses = Settings.TeleMicroPauses;
+        pasteManager.TeleFlowBursts = Settings.TeleFlowBursts;
+        pasteManager.TeleRealisticTypos = Settings.TeleRealisticTypos;
+        pasteManager.TeleRandomCapsErrors = Settings.TeleRandomCapsErrors;
+        pasteManager.TeleDoubleKeyStrokes = Settings.TeleDoubleKeyStrokes;
+        pasteManager.TeleCursorNavigation = Settings.TeleCursorNavigation;
+        pasteManager.TeleAutoCorrectMistakes = Settings.TeleAutoCorrectMistakes;
+        pasteManager.TeleBreathingPauses = Settings.TeleBreathingPauses;
+        pasteManager.TeleEndOfLinePause = Settings.TeleEndOfLinePause;
+        pasteManager.TelePasteDelay = Settings.TelePasteDelay;
+        pasteManager.TeleWordChunkSize = Settings.TeleWordChunkSize;
+        pasteManager.TeleBreathingInterval = Settings.TeleBreathingInterval;
+    }
+
+    public void RefreshHotkeys()
+    {
+        RegisterAllHotkeys();
     }
 
     private void ShowMainWindow()
@@ -83,4 +148,3 @@ public partial class App : Application
         base.OnExit(e);
     }
 }
-
