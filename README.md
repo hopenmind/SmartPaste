@@ -1,142 +1,303 @@
 <div align="center">
-  <img src="Assets/logo.svg" alt="SmartPaste Logo" width="128" height="128">
+  <img src="assets/logo.svg" alt="SmartPaste Logo" width="128" height="128">
   <h1>SmartPaste</h1>
-  <p>A lightweight, invisible Windows utility to transform how you paste, copy, and manage text.</p>
+  <p><strong>Windows Clipboard Intelligence Layer</strong></p>
+  <p>Copy once, paste perfectly — everywhere. SmartPaste detects your target application<br>and injects the optimal clipboard format automatically.</p>
 
   [![License: All Rights Reserved](https://img.shields.io/badge/License-All%20Rights%20Reserved-red.svg)](LICENSE)
   [![Made by](https://img.shields.io/badge/Made%20by-Hope%20'n%20Mind-blue.svg)](https://www.hopenmind.com)
-  [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2B-lightgrey.svg)](#)
-  [![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)](#)
+  [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D6.svg)](#)
+  [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4.svg)](#)
+  [![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20FR%20%7C%20BR-green.svg)](#localization)
 </div>
 
 ---
 
-## Overview
+## The Problem
 
-**SmartPaste** is a stealthy system tray application for Windows that runs silently near your clock, ready to solve everyday friction when dealing with text, lists, equations, and window management. It intercepts custom global keyboard shortcuts and performs intelligent clipboard operations — all without ever stealing focus from your active window.
+You copy a beautifully formatted article from the web — images, equations, diagrams. You paste into Word. What do you get? Broken images, missing formatting, garbled equations. You paste the same thing into Notepad and get HTML tags. Into Paint and get nothing.
 
-Whether you're fighting poorly designed web forms that refuse to accept pasted keyword lists, struggling to copy rendered LaTeX equations from Wikipedia into Word without them breaking, or needing to make automated text input look indistinguishable from a real human typing, SmartPaste has you covered.
+**Every application speaks a different clipboard language.** Windows puts multiple formats on the clipboard and hopes the target picks the right one. It usually doesn't.
+
+## The Solution
+
+SmartPaste sits between your copy and your paste. It intercepts Ctrl+V, detects the target application, and **injects only the format that app handles best**:
+
+| Target | Format Injected | Result |
+|--------|----------------|--------|
+| Word, Excel, Outlook | RTF with `\pict` embedded images | Perfect formatting, images inline |
+| Chrome, Firefox, Edge | CF_HTML with local file references | Full fidelity web content |
+| VS Code, Slack, Discord | CF_HTML (Chromium renderer) | Rich text preserved |
+| Notepad, terminals | Plain text only | Clean, no markup |
+| Paint, Photoshop | CF_BITMAP | Image paste |
+| Unknown app | All formats | Let the app choose |
+
+The target app has no choice — it receives exactly what it can handle.
 
 ---
 
 ## Features
 
-### Smart Paste — Intelligent List Pasting
+### Smart Copy — ContentPackage Engine
 
-Copy a list of keywords, tags, or any text. SmartPaste will type it out for you, character by character, as if a human were doing it.
+**Default shortcut:** `Ctrl+Shift+C` | **Optional:** replaces native `Ctrl+C`
 
-| Shortcut | Mode | Behavior |
-|---|---|---|
-| `Ctrl`+`Win`+`V` | **Normal** | Types the entire clipboard content letter by letter at your configured speed. |
-| `Ctrl`+`Alt`+`V` | **Word-by-Word + Space** | Splits your text into individual items, types each one, then presses `Space`. Ideal for inline tag fields. |
-| `Ctrl`+`Shift`+`V` | **Word-by-Word + Enter** | Splits your text into individual items, types each one, then presses `Enter`. Perfect for forms that validate one keyword at a time. |
+When you copy web content, SmartPaste captures everything into a structured **ContentPackage** — a local cache on disk:
 
-**Smart Auto-Splitting Engine:**
-SmartPaste doesn't need you to configure delimiters. It automatically detects and splits your copied text on any of the following characters:
-`Enter` `Comma` `Semicolon` `Colon` `Dot` `Slash` `Backslash` `Pipe` `Bullet` `Middle Dot` `Tab`
-Plus full-width Unicode variants used in CJK text (，；：。、｜). If none of these are found, it falls back to splitting by spaces.
-
-**Human Simulation Mode (Telework Mode):**
-Add `Shift` to *any* Smart Paste shortcut (e.g., `Ctrl`+`Shift`+`Win`+`V`) to activate realistic human typing simulation:
-- **Variable rhythm** — each keystroke has a randomized delay, mimicking natural typing speed fluctuations.
-- **Micro-pauses** — occasional longer pauses (300–800ms) simulate moments of "thinking."
-- **Flow bursts** — sudden accelerations where several characters are typed rapidly, simulating "being in the zone."
-- **Realistic typos** *(optional)* — rare chance of typing a wrong letter, pressing `Backspace`, and retyping correctly. Makes the input completely indistinguishable from a real person.
-
-This mode is designed to bypass productivity monitoring software ("bossware"), anti-bot form detectors, and any system that flags instant or perfectly rhythmic text input as automated.
-
----
-
-### Smart Copy — Faithful Web Content Capture
-
-**Shortcut:** `Ctrl`+`Shift`+`C`
-
-Copies selected content from web pages and documents while preserving **exact visual fidelity** — including rendered math equations, SVG graphics, and images.
+```
+%TEMP%\SmartPaste\current\
+  manifest.json          metadata + image descriptors
+  fragment.html          HTML with file:// image references
+  content.rtf            RTF with \pict binary-embedded images
+  text.txt               plain text fallback
+  selection.png          browser bitmap snapshot
+  images/
+    img_000.png          downloaded + cached locally
+    img_001.jpg
+    svg_000.svg
+```
 
 **How it works:**
-1. Intercepts the clipboard's HTML content after a normal copy.
-2. Detects all `<img>` tags (PNG, JPEG, GIF, SVG) and inline `<svg>` elements (commonly used by MathJax for equations).
-3. Downloads each image in memory and converts it to a **Base64 data URI** — embedding the image directly inside the HTML code.
-4. Replaces the original web URLs with these self-contained Base64 blocks.
-5. Preserves RTF and plain text fallbacks for compatibility with simpler editors.
+1. Triggers a normal `Ctrl+C` to let the browser populate the clipboard
+2. Extracts the HTML fragment and source URL
+3. Downloads all `<img>` sources (PNG, JPEG, GIF, WebP, BMP) with size limits (10 MB/image, 50 max)
+4. Converts inline `<svg>` elements (MathJax equations, diagrams) to local files
+5. Detects MIME types via magic bytes, not file extensions
+6. Generates RTF with `\pict\pngblip` binary-embedded images (native Office format)
+7. Converts non-standard formats (GIF, WebP, BMP) to PNG via WPF/WIC
+8. Saves the browser's bitmap render as `selection.png` (universal fallback)
+9. Tags the clipboard with a `SmartPaste_CopyId` so SmartPaste recognizes it later
 
-**Result:** Paste into Word, LibreOffice, Notion, or email clients and get the **exact same visual layout** you saw on screen — equations render perfectly, images don't break, and text remains editable. No more broken LaTeX or missing images when copying from Wikipedia, arXiv, or scientific journals.
-
-*You no longer have to fight with formats — you copy what you see, you paste what you saw.*
-
----
-
-### Case Converter — Instant Text Case Cycling
-
-**Shortcut:** `Ctrl`+`Win`+`C`
-
-Select any text in any application, press the shortcut, and it cycles through four case modes automatically:
-
-1. `lowercase` → `UPPERCASE` → `Title Case` → `aLtErNaTiNg CaSe` → back to `lowercase`
-
-Each press advances to the next mode. No menus, no configuration — just select, press, done.
+**No more Base64.** Images are real files, not inflated data URIs. The clipboard stays small. The cache auto-purges after 1 hour.
 
 ---
 
-### Always On Top — Pin Any Window
+### Smart Paste — Target-Aware Injection
 
-**Shortcut:** `Ctrl`+`Alt`+`T`
+**Default shortcuts:** `Ctrl+Shift+V` / `Ctrl+Alt+V` / `Ctrl+Win+V` | **Optional:** replaces native `Ctrl+V`
 
-Click on any window to make it active, press the shortcut, and that window stays pinned above all others. Press the shortcut again to release it.
+#### SmartInject (Ctrl+V override)
 
-Useful for keeping a calculator, reference document, video player, or terminal visible while working in other applications.
+When you press `Ctrl+V` and a ContentPackage exists on the clipboard:
+
+1. **PasteInterceptor** (low-level keyboard hook `WH_KEYBOARD_LL`) suppresses the native paste
+2. **TargetDetector** identifies the foreground process (`GetForegroundWindow` + `GetWindowThreadProcessId`)
+3. **SmartInject** sets ONLY the optimal format on the clipboard
+4. Sends a new `Ctrl+V` — the target app receives exactly what it needs
+
+70+ applications are classified across 6 categories:
+
+| Category | Apps | Strategy |
+|----------|------|----------|
+| **Office** | Word, Excel, PowerPoint, Outlook, OneNote | CF_RTF with `\pict` images |
+| **Browser** | Chrome, Firefox, Edge, Opera, Brave, Vivaldi, Arc | CF_HTML with file:// refs |
+| **Electron** | VS Code, Slack, Discord, Teams, Notion, Obsidian, Figma | CF_HTML |
+| **RichText** | WordPad, LibreOffice, WPS | CF_RTF |
+| **PlainText** | Notepad, Notepad++, terminals, Vim | CF_UNICODETEXT |
+| **ImageEditor** | Paint, Photoshop, GIMP, Krita, Inkscape | CF_BITMAP |
+
+When SmartCopy content isn't present, `Ctrl+V` passes through untouched. Zero impact on normal use.
+
+#### Typing Simulation Modes
+
+Three paste modes for text-only content, with optional human simulation:
+
+| Mode | Shortcut | Behavior |
+|------|----------|----------|
+| **Enter** | `Ctrl+Shift+V` | Splits on delimiters, types each segment + Enter |
+| **Space** | `Ctrl+Alt+V` | Splits on delimiters, types each segment + Space |
+| **Normal** | `Ctrl+Win+V` | Types character by character |
+
+**Smart Auto-Splitting** detects and splits on: newlines, commas, semicolons, colons, dots, slashes, pipes, bullets, and CJK variants. Falls back to spaces if none found.
 
 ---
 
-## Settings & Configuration
+### Telework Mode — Human Typing Simulation
 
-Right-click the SmartPaste tray icon and select **Settings** to access the full configuration panel. The settings window has three tabs:
+SmartPaste's simulation engine makes automated typing indistinguishable from a real human. Every parameter is tunable.
 
-### ⌨ Shortcuts Tab
-A complete reference table of all keyboard shortcuts, organized by category (Smart Paste, Utilities), with descriptions of each mode's behavior and the smart splitting engine.
+#### Natural Rhythm
+| Option | Effect |
+|--------|--------|
+| **Variable speed** | Keystroke delays fluctuate randomly around the base value |
+| **Thinking pauses** | Brief hesitations (300-800ms) every few words |
+| **Flow bursts** | Sudden rapid-fire sequences (10-40ms) for 5-20 characters |
+| **Breathing rhythm** | Longer pauses (400-1200ms) at configurable intervals |
+| **End-of-line pause** | Short delay after each Enter/newline |
 
-### ⚙ Settings Tab
-- **Typing Speed Slider** — Adjust the base delay between keystrokes (0ms to 200ms). Default is 30ms.
-- **Human Simulation Toggle** — Enable realistic typing rhythm simulation for all paste modes.
-- **Realistic Typos Toggle** — When Human Simulation is active, optionally include rare typos with automatic backspace-and-retype behavior.
-- **Start Minimized** — Launch SmartPaste directly to the system tray without showing the settings window.
-- **Auto-start with Windows** — Copies the application to `%LOCALAPPDATA%\SmartPaste\` and registers it in the Windows startup registry. Unchecking this removes the registry entry.
-- **Reset to Defaults** — Restores all settings to their original values.
-
-### ℹ About Tab
-Application information, feature overview, developer credits, and license details. Includes a clickable link to [hopenmind.com](https://www.hopenmind.com).
+#### Human Mistakes
+| Option | Effect |
+|--------|--------|
+| **Typos** | Wrong key, Backspace, correct key (1.5% probability) |
+| **Caps errors** | Wrong capitalization, Backspace, retype (0.8%) |
+| **Double-tap** | Same key twice by accident, Backspace (1.0%) |
+| **Cursor navigation** | Arrow keys to go back and fix errors |
+| **Auto-correct** | Automatically fixes simulated mistakes after a delay |
 
 ---
 
-## Settings Persistence
+### Command Center — Telework Dashboard
 
-All settings are automatically saved to a JSON file at:
+A fullscreen control panel for automated text input. Activated from the Telework settings tab.
+
+#### Manual Mode
+Paste or type text, click **START**, switch to the target app during the 3-2-1 countdown, and SmartPaste types it with full human simulation. Live preview shows progress in real-time.
+
+#### Auto Writer Mode
+Configure **sources** and **targets** for fully automated operation:
+
+**Sources** (text to type):
+- Local files: `.txt`, `.md`, `.log`, `.html`, `.htm`, `.rtf`
+- URLs: any `https://` — HTML is automatically stripped to plain text
+- Multiple sources rotate in random order for variety
+
+**Targets** (where to type):
+- Any `.exe` — launches the app if not running, focuses it if already open
+- Multiple targets rotate randomly
+- Optional: clear document before typing (`Ctrl+A` + `Delete`)
+
+**Controls:**
+- **START** — begins with 3-2-1 countdown
+- **PAUSE** — suspends mid-character, resumes exactly where stopped
+- **STOP** — cancels immediately
+- **EXIT** — restores normal window
+
+#### Scheduler — Weekly Autopilot
+
+An analog clock interface inspired by 80s aesthetics:
+
+- **Dark clock face** with luminous tick marks and monospace hour labels
+- **Blue arcs** for work periods (morning + afternoon)
+- **Grey arc** for lunch break
+- **4 draggable handles** that snap to 15-minute increments
+- **Digital readout** below: `09:00-12:00 | 12:00-13:30 | 13:30-17:00`
+- **Day toggles** (Mon-Sun) as compact pills
+
+**Energy Curve** — simulates realistic human productivity patterns throughout the day:
+
+| Time | Phase | Typing Speed |
+|------|-------|-------------|
+| 09:00-10:30 | Morning burst | 0.7x delay (fast, energetic) |
+| 10:30-12:00 | Normal pace | 1.0x delay |
+| 12:00-13:30 | Lunch break | No activity |
+| 13:30-15:00 | Post-lunch dip | 1.4x delay (slow, drowsy) |
+| 15:00-16:30 | Afternoon | 1.0x delay |
+| 16:30-17:00 | Winding down | 1.3x delay |
+
+The scheduler auto-starts typing when work hours begin and auto-stops for lunch and end of day. Configure it once, and it handles the entire work week autonomously.
+
+---
+
+### Case Converter
+
+**Shortcut:** `Ctrl+Win+C`
+
+Select text, press the shortcut. Each press cycles through:
+
+`lowercase` → `UPPERCASE` → `Title Case` → `aLtErNaTiNg CaSe` → back to `lowercase`
+
+---
+
+### Always On Top
+
+**Shortcut:** `Ctrl+Alt+T`
+
+Pins the active window above all others. Press again to release.
+
+---
+
+## Localization
+
+SmartPaste ships in three languages, switchable live via the `[EN]` button in the header:
+
+| Code | Language | |
+|------|----------|---|
+| `EN` | English | Default |
+| `FR` | Francais | |
+| `BR` | Brezhoneg | Breton |
+
+Language files are WPF ResourceDictionaries using `DynamicResource` binding — the switch is instant, no restart needed. Adding a language requires one `.xaml` file in `src/Lang/` and one entry in the cycle array.
+
+---
+
+## Design System
+
+SmartPaste uses a centralized design system (`Theme.xaml`) following systematic design principles:
+
+| Aspect | Implementation |
+|--------|---------------|
+| **Palette** | Slate greys (10 shades) + Blue brand accent (8 shades) + semantic colors |
+| **Typography** | Segoe UI Variable (UI), Cascadia Code (mono) |
+| **Spacing** | Scale: 4, 8, 12, 16, 24, 32, 48 |
+| **Elevation** | 2-tier shadows (ShadowSm, ShadowMd) |
+| **Components** | Card, AccentCard, DangerCard, ShortcutInput, BtnPrimary, BtnSecondary, ModernTab |
+| **Corners** | 6px cards, 4px inputs |
+
+Zero hardcoded colors in the UI — everything goes through `{StaticResource}` or `{DynamicResource}`.
+
+---
+
+## Architecture
+
 ```
-%LOCALAPPDATA%\SmartPaste\settings.json
+SmartCopy (Ctrl+C / Ctrl+Shift+C)
+     |
+     v
+ContentPackage ─── FormatCache (%TEMP%/SmartPaste/current/)
+     |                    |
+     |              manifest.json + fragment.html + content.rtf
+     |              selection.png + images/*.png
+     |
+SmartPaste (Ctrl+V / shortcuts)
+     |
+     v
+TargetDetector ── GetForegroundWindow() → process name → category
+     |
+     v
+SmartInject ── set targeted clipboard → Ctrl+V
+     |
+     v
+  [AutoWriterEngine] ── source rotation + target launch + cycle loop
+     |
+     v
+  [WorkScheduler] ── state machine (Working/Lunch/BeforeWork/AfterWork)
+                      + energy curve multiplier
 ```
 
-Your typing speed, simulation preferences, and startup options are preserved between sessions.
+### Source Files
 
----
+```
+src/
+  App.xaml / .cs                    Application entry, manager wiring, interceptor
+  MainWindow.xaml / .cs             Settings UI + Command Center dashboard
+  Theme.xaml                        Design system
+  ScheduleClock.xaml / .cs          Analog clock schedule picker
 
-## Installation
+  ContentPackage.cs                 Clipboard model + FormatCache disk storage
+  SmartCopyManager.cs               HTML processing, image download, RTF generation
+  SmartPasteManager.cs              SmartInject + typing simulation + dashboard API
+  PasteInterceptor.cs               WH_KEYBOARD_LL hook + clipboard monitor
+  TargetDetector.cs                 Foreground app classification (70+ apps)
+  AutoWriterEngine.cs               Source/target rotation, auto-launch, cycles
+  WorkScheduler.cs                  State machine scheduler + energy curve
 
-1. Download the latest `.exe` release from the [Releases](#) page.
-2. Run the executable. The SmartPaste icon appears in your System Tray (near the clock).
-3. Right-click the icon → **Settings** to configure your preferences.
+  CaseConverterManager.cs           Text case cycling
+  AlwaysOnTopManager.cs             Window pinning (SetWindowPos)
+  AutoStartManager.cs               AppData copy + registry startup
+  SettingsManager.cs                JSON persistence + models
+  GlobalHotkey.cs                   RegisterHotKey wrapper
+  ShortcutParser.cs                 Modifier+Key string parser
 
-### First Launch Behavior
-By default, the settings window opens on first launch so you can review all shortcuts and features. Enable **Start minimized to system tray** in Settings to skip this on future launches.
+  Lang/en.xaml                      English
+  Lang/fr.xaml                      Francais
+  Lang/br.xaml                      Brezhoneg
+```
 
 ---
 
 ## Building from Source
 
-SmartPaste is built with **C# (.NET 8 WPF)** and uses the Windows Win32 API for global keyboard hooks and clipboard manipulation.
-
-**Requirements:**
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- Windows 10 or later
+**Requirements:** [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) + Windows 10/11
 
 ```bash
 git clone https://github.com/hopenmind/smartpaste.git
@@ -145,35 +306,56 @@ dotnet build
 dotnet run
 ```
 
-The compiled executable will be in `bin/Debug/net8.0-windows/SmartPaste.exe`.
+Output: `bin/Debug/net8.0-windows/SmartPaste.exe`
+
+**NuGet dependencies** (auto-restored):
+- `Hardcodet.NotifyIcon.Wpf` — system tray integration
+- `InputSimulatorCore` — keystroke simulation
 
 ---
 
-## Architecture
+## Settings
 
-| Component | Purpose |
-|---|---|
-| `GlobalHotkey` | Win32 `RegisterHotKey` wrapper for system-wide keyboard interception |
-| `SmartPasteManager` | Core paste engine with 3 modes, smart splitting, and human simulation |
-| `SmartCopyManager` | HTML clipboard interceptor with Base64 image/SVG embedding |
-| `CaseConverterManager` | Text case cycling engine (lower/upper/title/alternating) |
-| `AlwaysOnTopManager` | Win32 `SetWindowPos` wrapper for window pinning |
-| `AutoStartManager` | AppData self-copy and Windows Registry startup management |
-| `SettingsManager` | JSON-based settings persistence in `%LOCALAPPDATA%` |
+All configuration persists as JSON in `%LOCALAPPDATA%\SmartPaste\settings.json` — shortcuts, toggles, telework options, Auto Writer sources/targets, scheduler week, language.
+
+---
+
+## Roadmap
+
+### Planned
+
+- **Panic button** — one shortcut kills all automation, hides SmartPaste, restores normal state instantly
+- **Anti-idle** — micro mouse movements to prevent Teams/Slack "Away" status and screen lock
+- **Mouse simulation** — Bezier curve movements, realistic scroll, random clicks between typing sessions
+- **Alt+Tab simulation** — switch between apps at realistic intervals to simulate multitasking
+- **Periodic Ctrl+S** — auto-save in target apps at human-realistic intervals
+- **Day profiles** — different source/target/rhythm configurations per weekday
+- **ContentPackage history** — browse and re-paste previous copies, not just "current"
+- **Clipboard preview** — visual preview of the ContentPackage before pasting
+- **SVG to PNG** — rasterize SVGs for RTF embedding via Svg.NET
+- **Learning mode** — remembers which format works for unknown apps
+- **Notification toasts** — subtle feedback on SmartCopy/SmartInject actions
+- **Dark mode** — full dark theme (design system already supports it)
+- **Portable mode** — settings in app directory instead of AppData
+- **Silent installer** — MSI/MSIX for enterprise deployment
+
+### Experimental
+
+- **COM automation** — direct Word/Excel object injection for pixel-perfect formatting
+- **Clipboard format designer** — visual editor for custom CF_HTML/CF_RTF templates
+- **Network sync** — share ContentPackages across machines via LAN
+- **Plugin system** — custom processors for specific content types
+- **Mobile companion** — phone-to-PC content transfer via QR/local network
 
 ---
 
 ## Security & Privacy
 
-- SmartPaste runs entirely **locally** on your machine. No data is sent over the network except when Smart Copy downloads images from web pages you explicitly copy from.
-- The Human Simulation mode uses randomized timing — no two paste sessions produce identical keystroke patterns.
-- Global keyboard hooks only listen for the specific registered shortcut combinations. All other keystrokes pass through untouched.
-
----
-
-## Contributing
-
-Contributions, issues, and feature requests are welcome. Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
+- **100% local** — no telemetry, no cloud, no accounts, no network calls except explicit image downloads
+- Image downloads enforce: 10 MB limit, 10s timeout, 50 images max, magic byte MIME verification
+- The keyboard hook intercepts only `Ctrl+V` (when SmartCopy content exists) and `Ctrl+C` (when override enabled) — all other keystrokes pass through
+- Human simulation uses randomized timing — no two sessions produce identical patterns
+- Image cache auto-purges after 1 hour
 
 ---
 
@@ -188,5 +370,8 @@ See the [LICENSE](LICENSE) file for full terms.
 ---
 
 <div align="center">
-  <a href="https://www.hopenmind.com">www.hopenmind.com</a>
+  <br>
+  <a href="https://www.hopenmind.com"><strong>Hope 'n Mind</strong></a>
+  <br>
+  <sub>Because the clipboard deserved better.</sub>
 </div>

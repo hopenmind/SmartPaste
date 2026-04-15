@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- App.xaml in src/ must be explicitly declared as ApplicationDefinition -->
+    <Page Remove="src\App.xaml" />
+    <ApplicationDefinition Include="src\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="assets\icon-192.png" />
   </ItemGroup>
 

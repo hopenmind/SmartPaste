@@ -1,0 +1,118 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Tabs -->
+    <s:String x:Key="TabShortcuts">Raccourcis</s:String>
+    <s:String x:Key="TabTelework">Teletravail</s:String>
+    <s:String x:Key="TabOptions">Options</s:String>
+    <s:String x:Key="TabAbout">A propos</s:String>
+
+    <!-- Shortcuts tab -->
+    <s:String x:Key="HeadSmartPaste">Smart Paste</s:String>
+    <s:String x:Key="DescSmartPaste">Colle le contenu du presse-papiers mot par mot ou caractere par caractere. Trois modes : separateur Entree, separateur Espace, ou saisie lettre par lettre.</s:String>
+    <s:String x:Key="SP1Label">Mode 1 — Separateur Entree</s:String>
+    <s:String x:Key="SP1Desc">Decoupe et colle chaque segment suivi de Entree</s:String>
+    <s:String x:Key="SP2Label">Mode 2 — Separateur Espace</s:String>
+    <s:String x:Key="SP2Desc">Decoupe et colle chaque segment suivi de Espace</s:String>
+    <s:String x:Key="SP3Label">Mode 3 — Saisie normale</s:String>
+    <s:String x:Key="SP3Desc">Tape le texte caractere par caractere</s:String>
+    <s:String x:Key="OverrideV">Remplacer Ctrl+V — detecte l'app cible et injecte le format optimal</s:String>
+
+    <s:String x:Key="HeadSmartCopy">Smart Copy</s:String>
+    <s:String x:Key="DescSmartCopy">Capture le contenu web (texte, images, SVG, equations) dans un cache local. Genere un presse-papiers multi-format (HTML + RTF + Bitmap) pour un collage fidele dans toute application.</s:String>
+    <s:String x:Key="SCLabel">Smart Copy</s:String>
+    <s:String x:Key="SCDesc">Copie enrichie avec telechargement des images</s:String>
+    <s:String x:Key="OverrideC">Remplacer Ctrl+C — enrichit automatiquement chaque copie</s:String>
+
+    <s:String x:Key="HeadUtilities">Utilitaires</s:String>
+    <s:String x:Key="CCLabel">Convertisseur de casse</s:String>
+    <s:String x:Key="CCDesc">Cycle : minuscule, MAJUSCULE, Titre, aLtErNe</s:String>
+    <s:String x:Key="AOTLabel">Toujours au premier plan</s:String>
+    <s:String x:Key="AOTDesc">Epingle la fenetre active au-dessus de toutes</s:String>
+    <s:String x:Key="TeleLabel">Reglages Teletravail</s:String>
+    <s:String x:Key="TeleDesc">Ouvre l'onglet de configuration teletravail</s:String>
+    <s:String x:Key="ShortcutHint">Cliquez sur un champ et appuyez sur votre combinaison de touches. Sauvegarde au relachement.</s:String>
+
+    <!-- Telework tab -->
+    <s:String x:Key="TeleIntroTitle">Comment ca marche</s:String>
+    <s:String x:Key="TeleIntroDesc">Quand vous collez avec un raccourci SmartPaste, le texte est saisi comme par un humain : vitesse variable, hesitations, et meme des fautes de frappe. Activez ces options pour un comportement indiscernable de la saisie manuelle.</s:String>
+
+    <s:String x:Key="HeadRhythm">Rythme naturel</s:String>
+    <s:String x:Key="DescRhythm">Simule les variations de vitesse d'un vrai dactylographe.</s:String>
+    <s:String x:Key="TeleVariable">Vitesse variable</s:String>
+    <s:String x:Key="TeleVariableDesc">La vitesse fluctue aleatoirement, comme un humain qui ne tape jamais a vitesse constante.</s:String>
+    <s:String x:Key="TeleMicro">Pauses de reflexion</s:String>
+    <s:String x:Key="TeleMicroDesc">Courtes hesitations tous les quelques mots, comme si on reflechissait.</s:String>
+    <s:String x:Key="TeleFlow">Accelerations soudaines</s:String>
+    <s:String x:Key="TeleFlowDesc">Sequences rapides occasionnelles quand le texte est familier.</s:String>
+    <s:String x:Key="TeleBreath">Rythme respiratoire</s:String>
+    <s:String x:Key="TeleBreathDesc">Pauses plus longues a intervalles reguliers, simulant la respiration naturelle.</s:String>
+    <s:String x:Key="TeleEOL">Pause en fin de ligne</s:String>
+    <s:String x:Key="TeleEOLDesc">Court delai apres chaque retour a la ligne.</s:String>
+
+    <s:String x:Key="HeadMistakes">Erreurs humaines</s:String>
+    <s:String x:Key="DescMistakes">Reproduit les fautes naturelles que tout le monde fait en tapant.</s:String>
+    <s:String x:Key="TeleTypo">Fautes de frappe</s:String>
+    <s:String x:Key="TeleTypoDesc">Tape une mauvaise touche, puis Retour arriere, puis la bonne lettre.</s:String>
+    <s:String x:Key="TeleCaps">Erreurs de majuscules</s:String>
+    <s:String x:Key="TeleCapsDesc">Oubli occasionnel de Shift ou appui involontaire sur Verr Maj.</s:String>
+    <s:String x:Key="TeleDouble">Double frappe accidentelle</s:String>
+    <s:String x:Key="TeleDoubleDesc">Appuie deux fois sur la meme touche par accident, puis corrige.</s:String>
+    <s:String x:Key="TeleCursor">Navigation au curseur</s:String>
+    <s:String x:Key="TeleCursorDesc">Utilise les fleches pour revenir corriger une erreur.</s:String>
+    <s:String x:Key="TeleAuto">Auto-correction</s:String>
+    <s:String x:Key="TeleAutoDesc">Corrige automatiquement les fautes simulees apres un court delai.</s:String>
+
+    <s:String x:Key="HeadTiming">Reglages de vitesse</s:String>
+    <s:String x:Key="DescTiming">Ajustez le tempo global de la simulation.</s:String>
+    <s:String x:Key="TimingDelayHint">Plus bas = frappe rapide. Plus haut = frappe lente et deliberee.</s:String>
+    <s:String x:Key="TimingChunkHint">Nombre de caracteres traites d'un bloc entre chaque micro-pause.</s:String>
+    <s:String x:Key="TimingBreathHint">Frequence des pauses longues simulant le rythme naturel du corps.</s:String>
+
+    <!-- Options tab -->
+    <s:String x:Key="HeadFeatures">Fonctionnalites</s:String>
+    <s:String x:Key="DescFeatures">Activez ou desactivez chaque fonction. Les fonctions desactivees n'ecoutent plus leurs raccourcis.</s:String>
+    <s:String x:Key="FeatSP">Smart Paste</s:String>
+    <s:String x:Key="FeatSPDesc">3 modes de collage avec decoupe automatique et simulation humaine.</s:String>
+    <s:String x:Key="FeatSC">Smart Copy</s:String>
+    <s:String x:Key="FeatSCDesc">Capture le contenu web dans un ContentPackage avec presse-papiers multi-format.</s:String>
+    <s:String x:Key="FeatPI">Paste Intercept</s:String>
+    <s:String x:Key="FeatPIDesc">Intercepte Ctrl+V pour injecter le format optimal selon l'application cible.</s:String>
+    <s:String x:Key="FeatCC">Convertisseur de casse</s:String>
+    <s:String x:Key="FeatCCDesc">Cycle le texte selectionne entre minuscule, MAJUSCULE, Titre, aLtErNe.</s:String>
+    <s:String x:Key="FeatAOT">Toujours au premier plan</s:String>
+    <s:String x:Key="FeatAOTDesc">Epingle la fenetre active au-dessus de toutes les autres.</s:String>
+
+    <s:String x:Key="HeadSpeed">Vitesse de saisie</s:String>
+    <s:String x:Key="HeadStartup">Demarrage</s:String>
+    <s:String x:Key="StartMinimized">Demarrer reduit dans la barre systeme</s:String>
+    <s:String x:Key="AutoStart">Lancer automatiquement au demarrage de Windows</s:String>
+    <s:String x:Key="BtnReset">Reinitialiser les parametres</s:String>
+
+    <!-- About tab -->
+    <s:String x:Key="AboutDesc">Une couche d'intelligence clipboard pour Windows. Collage adaptatif selon l'application cible, presse-papiers multi-format avec cache d'images local, simulation de saisie humaine.</s:String>
+    <s:String x:Key="AboutTagline">Developpe avec passion pour la productivite et la simplicite.</s:String>
+    <s:String x:Key="LicenseTitle">Licence</s:String>
+    <s:String x:Key="LicenseText">Tous droits reserves. Logiciel fourni gratuitement pour un usage personnel non commercial uniquement. Aucun droit d'exploitation, distribution ou usage commercial sans accord ecrit prealable.</s:String>
+
+    <!-- Dashboard -->
+    <s:String x:Key="DashLaunch">OUVRIR LE POSTE DE COMMANDE</s:String>
+    <s:String x:Key="DashInput">TEXTE A SAISIR</s:String>
+    <s:String x:Key="DashPreview">APERCU EN DIRECT</s:String>
+    <s:String x:Key="DashQuickSettings">REGLAGES RAPIDES</s:String>
+    <s:String x:Key="DashStart">DEMARRER</s:String>
+    <s:String x:Key="DashPause">PAUSE</s:String>
+    <s:String x:Key="DashStop">ARRETER</s:String>
+    <s:String x:Key="DashExit">QUITTER</s:String>
+    <s:String x:Key="DashCountdownHint">Basculez vers l'application cible maintenant</s:String>
+    <s:String x:Key="DashManual">Manuel</s:String>
+    <s:String x:Key="DashAuto">Auto Writer</s:String>
+    <s:String x:Key="DashSources">SOURCES (txt, html, URL)</s:String>
+    <s:String x:Key="DashTargets">APPLICATIONS CIBLES</s:String>
+    <s:String x:Key="DashLoop">Boucle continue</s:String>
+    <s:String x:Key="DashClear">Effacer le document avant de taper</s:String>
+    <s:String x:Key="DashScheduler">PLANIFICATEUR</s:String>
+    <s:String x:Key="DashSchedulerOn">Actif</s:String>
+
+</ResourceDictionary>

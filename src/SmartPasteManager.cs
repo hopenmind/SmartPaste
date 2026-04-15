@@ -1,8 +1,10 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -35,6 +37,43 @@ namespace SmartPaste
         public int TeleWordChunkSize { get; set; } = 5;
         public int TeleBreathingInterval { get; set; } = 15;
 
+        // ── Dashboard state ──────────────────────────────────────────
+        private volatile bool _cancelRequested;
+        private volatile bool _pauseRequested;
+        public int DashTotal { get; private set; }
+        public int DashProgress { get; private set; }
+        public bool DashActive { get; private set; }
+        public bool DashPaused => _pauseRequested;
+        public string DashLastChar { get; private set; } = "";
+
+        /// <summary>Multiplier applied to all delays. Set by WorkScheduler energy curve.</summary>
+        public double EnergyMultiplier { get; set; } = 1.0;
+
+        public void DashCancel() => _cancelRequested = true;
+        public void DashPause() => _pauseRequested = true;
+        public void DashResume() => _pauseRequested = false;
+
+        /// <summary>
+        /// Types text from the dashboard with full simulation, progress tracking,
+        /// and pause/cancel support. The user must focus the target app first.
+        /// </summary>
+        public async Task DashTypeAsync(string text, int focusDelayMs = 3000)
+        {
+            _cancelRequested = false;
+            _pauseRequested = false;
+            DashTotal = text.Length;
+            DashProgress = 0;
+            DashActive = true;
+            DashLastChar = "";
+
+            // Give user time to click into target app
+            await Task.Delay(focusDelayMs);
+
+            await Task.Run(() => SimulateTyping(text, false));
+
+            DashActive = false;
+        }
+
         public void RegisterHotkeys(IntPtr hwnd, string shortcut1, string shortcut2, string shortcut3)
         {
             UnregisterHotkeys();
@@ -63,8 +102,33 @@ namespace SmartPaste
             _hotkeyMode3?.Dispose(); _hotkeyMode3 = null;
         }
 
+        // ── Entry point ──────────────────────────────────────────────
+
         private async void Paste(int mode)
         {
+            // ── SmartInject path ──
+            // If the clipboard was tagged by SmartCopy, read the ContentPackage
+            // and inject the optimal format for the target application.
+            try
+            {
+                IDataObject? clip = Clipboard.GetDataObject();
+                if (clip?.GetDataPresent(FormatCache.CopyIdFormat) == true)
+                {
+                    string? clipId = clip.GetData(FormatCache.CopyIdFormat) as string;
+                    if (!string.IsNullOrEmpty(clipId))
+                    {
+                        var package = FormatCache.Load();
+                        if (package != null && package.Id == clipId && package.HasRichContent)
+                        {
+                            await SmartInject(package);
+                            return;
+                        }
+                    }
+                }
+            }
+            catch { /* fall through to normal paste */ }
+
+            // ── Normal SmartPaste path (typing simulation) ──
             if (!Clipboard.ContainsText()) return;
             string text = Clipboard.GetText();
             if (string.IsNullOrWhiteSpace(text)) return;
@@ -89,7 +153,101 @@ namespace SmartPaste
             });
         }
 
-        // --- Normal Modes ---
+        // ── SmartInject — target-aware paste from ContentPackage ─────
+        //
+        // Instead of putting ALL formats on the clipboard and hoping
+        // the target picks the right one, we put ONLY the optimal
+        // format → the app has no choice but to use it.
+
+        /// <summary>
+        /// Target-aware paste from ContentPackage.
+        /// Called from SmartPaste hotkeys AND from PasteInterceptor (Ctrl+V override).
+        /// </summary>
+        public async Task SmartInject(ContentPackage package)
+        {
+            var (target, _) = TargetDetector.Detect();
+
+            // Brief delay to let key release propagate
+            await Task.Delay(120);
+
+            var data = new DataObject();
+
+            // Always include text (universal fallback)
+            if (!string.IsNullOrEmpty(package.PlainText))
+                data.SetText(package.PlainText, TextDataFormat.UnicodeText);
+
+            switch (target)
+            {
+                case TargetType.Office:
+                case TargetType.RichText:
+                    if (!string.IsNullOrEmpty(package.RtfContent))
+                        data.SetText(package.RtfContent, TextDataFormat.Rtf);
+                    else if (!string.IsNullOrEmpty(package.HtmlFragment))
+                        data.SetText(FormatCache.BuildCFHtml(package.HtmlFragment, package.SourceUrl), TextDataFormat.Html);
+                    break;
+
+                case TargetType.Browser:
+                case TargetType.Electron:
+                    if (!string.IsNullOrEmpty(package.HtmlFragment))
+                        data.SetText(FormatCache.BuildCFHtml(package.HtmlFragment, package.SourceUrl), TextDataFormat.Html);
+                    break;
+
+                case TargetType.PlainText:
+                    // Text already set above
+                    break;
+
+                case TargetType.ImageEditor:
+                    if (FormatCache.HasSelectionBitmap)
+                    {
+                        try
+                        {
+                            using var stream = File.OpenRead(FormatCache.SelectionBitmapPath);
+                            var decoder = new PngBitmapDecoder(stream,
+                                BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                            data.SetImage(decoder.Frames[0]);
+                        }
+                        catch { }
+                    }
+                    break;
+
+                default:
+                    // Unknown → all formats
+                    if (!string.IsNullOrEmpty(package.RtfContent))
+                        data.SetText(package.RtfContent, TextDataFormat.Rtf);
+                    if (!string.IsNullOrEmpty(package.HtmlFragment))
+                        data.SetText(FormatCache.BuildCFHtml(package.HtmlFragment, package.SourceUrl), TextDataFormat.Html);
+                    if (FormatCache.HasSelectionBitmap)
+                    {
+                        try
+                        {
+                            using var stream = File.OpenRead(FormatCache.SelectionBitmapPath);
+                            var dec = new PngBitmapDecoder(stream,
+                                BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                            data.SetImage(dec.Frames[0]);
+                        }
+                        catch { }
+                    }
+                    break;
+            }
+
+            // Tag for SmartPaste recognition
+            data.SetData(FormatCache.CopyIdFormat, package.Id);
+
+            // Set targeted clipboard
+            for (int attempt = 0; attempt < 5; attempt++)
+            {
+                try { Clipboard.SetDataObject(data, true); break; }
+                catch (System.Runtime.InteropServices.COMException)
+                { await Task.Delay(100); }
+            }
+
+            // Inject via Ctrl+V
+            await Task.Delay(50);
+            _simulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
+        }
+
+        // ── Normal paste modes (unchanged) ───────────────────────────
+
         private void PasteMode1(string text) { _simulator.Keyboard.TextEntry(text); }
 
         private void PasteMode2(string text)
@@ -119,8 +277,10 @@ namespace SmartPaste
             }
         }
 
-        // --- Simulation Modes ---
+        // ── Simulation modes (unchanged) ─────────────────────────────
+
         private void PasteMode1Sim(string text) { SimulateTyping(text, false); }
+
         private void PasteMode2Sim(string text)
         {
             string[] items = SplitText(text);
@@ -135,6 +295,7 @@ namespace SmartPaste
                 }
             }
         }
+
         private void PasteMode3Sim(string text)
         {
             string[] items = SplitText(text);
@@ -156,26 +317,25 @@ namespace SmartPaste
             _charCountSinceBreath = 0;
             foreach (char c in text)
             {
+                // Dashboard: cancel/pause support
+                if (_cancelRequested) return;
+                while (_pauseRequested && !_cancelRequested)
+                    Thread.Sleep(100);
+                if (_cancelRequested) return;
+
                 if (TeleRealisticTypos && ShouldMakeTypo())
-                {
                     TypeWithTypo(c);
-                }
                 else if (TeleDoubleKeyStrokes && ShouldDoubleKey())
-                {
                     TypeWithDoubleKey(c);
-                }
                 else if (TeleRandomCapsErrors && ShouldCapError(c))
-                {
                     TypeWithCapError(c);
-                }
                 else
-                {
                     _simulator.Keyboard.TextEntry(c.ToString());
-                }
 
                 _charCountSinceBreath++;
+                DashProgress++;
+                DashLastChar = c.ToString();
 
-                // Breathing pauses
                 if (TeleBreathingPauses && _charCountSinceBreath >= TeleBreathingInterval)
                 {
                     Thread.Sleep(_random.Next(400, 1200));
@@ -188,9 +348,8 @@ namespace SmartPaste
 
         private void SleepHumanDelay()
         {
-            int baseDelay = Math.Max(TelePasteDelay, 10);
+            int baseDelay = (int)(Math.Max(TelePasteDelay, 10) * EnergyMultiplier);
 
-            // Flow mode
             if (TeleFlowBursts && _inFlow && _flowCounter > 0)
             {
                 Thread.Sleep(_random.Next(10, 40));
@@ -199,7 +358,6 @@ namespace SmartPaste
                 return;
             }
 
-            // Enter flow
             if (TeleFlowBursts && !_inFlow && _random.Next(100) < 10)
             {
                 _inFlow = true;
@@ -208,22 +366,16 @@ namespace SmartPaste
                 return;
             }
 
-            // Micro-pauses
             if (TeleMicroPauses && _random.Next(100) < 5)
             {
                 Thread.Sleep(_random.Next(300, 800));
                 return;
             }
 
-            // Variable rhythm
             if (TeleVariableRhythm)
-            {
                 Thread.Sleep(_random.Next(baseDelay / 2, baseDelay * 2 + 1));
-            }
             else
-            {
                 Thread.Sleep(baseDelay);
-            }
         }
 
         private bool ShouldMakeTypo() => _random.Next(1000) < 15;

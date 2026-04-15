@@ -1,3 +1,4 @@
+using System;
 using System.Configuration;
 using System.Data;
 using System.Windows;
@@ -17,6 +18,7 @@ public partial class App : Application
     private MainWindow? _mainWindow;
     private IntPtr _hwnd;
     private GlobalHotkey? teleworkHotkey;
+    private PasteInterceptor? pasteInterceptor;
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
@@ -47,6 +49,14 @@ public partial class App : Application
         caseConverterManager = new CaseConverterManager();
         alwaysOnTopManager = new AlwaysOnTopManager();
         smartCopyManager = new SmartCopyManager();
+
+        // Load language
+        SetLanguage(Settings.Language);
+
+        // Keyboard interceptor — Ctrl+V (SmartInject) + Ctrl+C (auto-enhance)
+        pasteInterceptor = new PasteInterceptor(_hwnd, OnSmartPasteIntercept, OnSmartCopyIntercept);
+        pasteInterceptor.Enabled = Settings.EnablePasteIntercept;
+        pasteInterceptor.OverrideCtrlC = Settings.OverrideCtrlC;
 
         RegisterAllHotkeys();
 
@@ -111,6 +121,13 @@ public partial class App : Application
             teleworkHotkey.HotkeyPressed += (s, e) => TeleworkShortcutPressed();
         }
 
+        // Intercept toggles
+        if (pasteInterceptor != null)
+        {
+            pasteInterceptor.Enabled = Settings.EnablePasteIntercept;
+            pasteInterceptor.OverrideCtrlC = Settings.OverrideCtrlC;
+        }
+
         // Apply telework settings
         pasteManager.DelayMilliseconds = Settings.DelayMilliseconds;
         pasteManager.TeleVariableRhythm = Settings.TeleVariableRhythm;
@@ -131,6 +148,64 @@ public partial class App : Application
     public void RefreshHotkeys()
     {
         RegisterAllHotkeys();
+    }
+
+    public void SetLanguage(string lang)
+    {
+        var dict = new ResourceDictionary
+        {
+            Source = new Uri($"pack://application:,,,/src/Lang/{lang}.xaml")
+        };
+
+        // Remove previous language dictionary if any
+        var existing = Resources.MergedDictionaries;
+        for (int i = existing.Count - 1; i >= 0; i--)
+        {
+            var src = existing[i].Source?.ToString() ?? "";
+            if (src.Contains("Lang/")) existing.RemoveAt(i);
+        }
+        existing.Add(dict);
+
+        Settings.Language = lang;
+        SettingsManager.Save(Settings);
+    }
+
+    /// <summary>
+    /// Called by PasteInterceptor when Ctrl+C is pressed with OverrideCtrlC enabled.
+    /// Normal Ctrl+C already happened — we just enhance the clipboard.
+    /// </summary>
+    private void OnSmartCopyIntercept()
+    {
+        smartCopyManager.EnhanceClipboard();
+    }
+
+    /// <summary>
+    /// Called by PasteInterceptor when Ctrl+V is pressed and SmartCopy content exists.
+    /// </summary>
+    private async void OnSmartPasteIntercept()
+    {
+        try
+        {
+            IDataObject? clip = System.Windows.Clipboard.GetDataObject();
+            string? clipId = clip?.GetData(FormatCache.CopyIdFormat) as string;
+            if (string.IsNullOrEmpty(clipId)) return;
+
+            var package = FormatCache.Load();
+            if (package == null || package.Id != clipId) return;
+
+            pasteInterceptor?.BeginInject();
+            try
+            {
+                await pasteManager.SmartInject(package);
+            }
+            finally
+            {
+                // Small delay so the injected Ctrl+V isn't re-intercepted
+                await System.Threading.Tasks.Task.Delay(200);
+                pasteInterceptor?.EndInject();
+            }
+        }
+        catch { }
     }
 
     private void ShowMainWindow()
@@ -160,6 +235,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        pasteInterceptor?.Dispose();
         notifyIcon?.Dispose();
         pasteManager?.Dispose();
         caseConverterManager?.Dispose();

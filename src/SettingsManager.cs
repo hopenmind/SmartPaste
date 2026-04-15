@@ -10,6 +10,9 @@ namespace SmartPaste
         public bool StartMinimized { get; set; } = false;
         public bool AutoStart { get; set; } = false;
 
+        // Language: "en" or "fr"
+        public string Language { get; set; } = "en";
+
         // Function Toggles
         public bool EnableSmartPaste { get; set; } = true;
         public bool EnableSmartCopy { get; set; } = true;
@@ -27,6 +30,33 @@ namespace SmartPaste
         public string CaseConverterShortcut { get; set; } = "Ctrl+Win+C";
         public string AlwaysOnTopShortcut { get; set; } = "Ctrl+Alt+T";
         public string TeleworkShortcut { get; set; } = "Ctrl+Shift+T";
+
+        // Native shortcut overrides
+        public bool EnablePasteIntercept { get; set; } = true;   // Override Ctrl+V
+        public bool OverrideCtrlC { get; set; } = false;          // Override Ctrl+C
+
+        // Auto Writer
+        public List<string> AutoWriterSources { get; set; } = new();
+        public List<string> AutoWriterTargets { get; set; } = new();
+
+        // Scheduler
+        public bool SchedulerEnabled { get; set; } = false;
+        public List<ScheduleDay> WeekSchedule { get; set; } = DefaultWeek();
+
+        private static List<ScheduleDay> DefaultWeek() => new()
+        {
+            new() { Enabled = false }, // Sunday
+            new() { Enabled = true },  // Monday
+            new() { Enabled = true },  // Tuesday
+            new() { Enabled = true },  // Wednesday
+            new() { Enabled = true },  // Thursday
+            new() { Enabled = true },  // Friday
+            new() { Enabled = false }, // Saturday
+        };
+        public int AutoWriterMinInterval { get; set; } = 30;
+        public int AutoWriterMaxInterval { get; set; } = 120;
+        public bool AutoWriterLoop { get; set; } = true;
+        public bool AutoWriterClearBefore { get; set; } = false;
 
         // Telework: Core
         public bool TeleVariableRhythm { get; set; } = true;
@@ -46,6 +76,15 @@ namespace SmartPaste
         public int TelePasteDelay { get; set; } = 100;
         public int TeleWordChunkSize { get; set; } = 5;
         public int TeleBreathingInterval { get; set; } = 15;
+    }
+
+    public class ScheduleDay
+    {
+        public bool Enabled { get; set; } = true;
+        public string Start { get; set; } = "09:00";
+        public string End { get; set; } = "17:00";
+        public string LunchStart { get; set; } = "12:00";
+        public string LunchEnd { get; set; } = "13:30";
     }
 
     public static class SettingsManager

@@ -1,0 +1,118 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Ivinellou / Tabs -->
+    <s:String x:Key="TabShortcuts">Berradennou</s:String>
+    <s:String x:Key="TabTelework">Labourat a-bell</s:String>
+    <s:String x:Key="TabOptions">Dibarzhioù</s:String>
+    <s:String x:Key="TabAbout">Diwar-benn</s:String>
+
+    <!-- Berradennou / Shortcuts tab -->
+    <s:String x:Key="HeadSmartPaste">Smart Paste</s:String>
+    <s:String x:Key="DescSmartPaste">Pegañ endalc'had ar golver ger-ha-ger pe lizherenn-ha-lizherenn. Tri mod : dispartier Enkas, dispartier Esaouenn, pe skrivañ lizherenn-ha-lizherenn.</s:String>
+    <s:String x:Key="SP1Label">Mod 1 — Dispartier Enkas</s:String>
+    <s:String x:Key="SP1Desc">Troc'hañ ha pegañ pep lodenn heuliet gant Enkas</s:String>
+    <s:String x:Key="SP2Label">Mod 2 — Dispartier Esaouenn</s:String>
+    <s:String x:Key="SP2Desc">Troc'hañ ha pegañ pep lodenn heuliet gant Esaouenn</s:String>
+    <s:String x:Key="SP3Label">Mod 3 — Skrivañ reizh</s:String>
+    <s:String x:Key="SP3Desc">Skrivañ an destenn lizherenn-ha-lizherenn</s:String>
+    <s:String x:Key="OverrideV">Erlec'hiañ Ctrl+V — dinoiñ an arload pal ha stlejañ ar furmad gwellañ</s:String>
+
+    <s:String x:Key="HeadSmartCopy">Smart Copy</s:String>
+    <s:String x:Key="DescSmartCopy">Pakañ endalc'had web (testenn, skeudennoù, SVG, kevatalennoù) en ur c'huduenn lec'hel. Sevel ur golver lies-furmad (HTML + RTF + Bitmap) evit pegañ en holl arloadoù.</s:String>
+    <s:String x:Key="SCLabel">Smart Copy</s:String>
+    <s:String x:Key="SCDesc">Eilañ pinvidikaet gant pellgargañ ar skeudennoù</s:String>
+    <s:String x:Key="OverrideC">Erlec'hiañ Ctrl+C — pinvidikaet ent emgefreek pep eiladenn</s:String>
+
+    <s:String x:Key="HeadUtilities">Ostilhoù</s:String>
+    <s:String x:Key="CCLabel">Kemmañ ar skritur</s:String>
+    <s:String x:Key="CCDesc">Kelc'h : lizherennoù bihan, PENNLIZHERENNOÙ, Titl, aLtErNeK</s:String>
+    <s:String x:Key="AOTLabel">Atav war-c'horre</s:String>
+    <s:String x:Key="AOTDesc">Spilhennañ ar prenestr oberiant a-us d'an holl re all</s:String>
+    <s:String x:Key="TeleLabel">Arventennoù labourat a-bell</s:String>
+    <s:String x:Key="TeleDesc">Digeriñ an ivinell kefluniañ labourat a-bell</s:String>
+    <s:String x:Key="ShortcutHint">Klikañ war ur park ha pouezañ war ho kenaozadur touchennoù. Enrollet pa vez losket.</s:String>
+
+    <!-- Labourat a-bell / Telework tab -->
+    <s:String x:Key="TeleIntroTitle">Penaos ez a en-dro</s:String>
+    <s:String x:Key="TeleIntroDesc">Pa begit gant ur berradenn SmartPaste, an destenn a vez skrivet evel gant un den : tizh kemmus, estlammadurioù, ha zoken fazioù. Gweredekait an dibarzhioù-mañ evit un emzalc'h diheverk diouzh ar skrivañ dre zorn.</s:String>
+
+    <s:String x:Key="HeadRhythm">Gwiad naturel</s:String>
+    <s:String x:Key="DescRhythm">Eilañ kemmoù tizh ur skriver gwirion.</s:String>
+    <s:String x:Key="TeleVariable">Tizh kemmus</s:String>
+    <s:String x:Key="TeleVariableDesc">An tizh a gemm dre zegouezh, evel un den na skriv morse d'an hevelep tizh.</s:String>
+    <s:String x:Key="TeleMicro">Ehanioù soñjal</s:String>
+    <s:String x:Key="TeleMicroDesc">Estlammadurioù berr bep un nebeud gerioù, evel pa soñjer e petra da skrivañ.</s:String>
+    <s:String x:Key="TeleFlow">Buanadurioù spontus</s:String>
+    <s:String x:Key="TeleFlowDesc">Kendalc'hadoù prim a-wechoù pa vez anavezet an destenn.</s:String>
+    <s:String x:Key="TeleBreath">Gwiad an analañ</s:String>
+    <s:String x:Key="TeleBreathDesc">Ehanioù hiroc'h da goulzioù reizh, eilañ an analañ naturel.</s:String>
+    <s:String x:Key="TeleEOL">Ehan e dibenn al linenn</s:String>
+    <s:String x:Key="TeleEOLDesc">Dale berr goude pep distro-linenn.</s:String>
+
+    <s:String x:Key="HeadMistakes">Fazioù mab-den</s:String>
+    <s:String x:Key="DescMistakes">Adober ar fazioù naturel a ra an holl o skrivañ.</s:String>
+    <s:String x:Key="TeleTypo">Fazioù skrivañ</s:String>
+    <s:String x:Key="TeleTypoDesc">Pouezañ war an touch fall, da neuze Diverkañ, da neuze al lizherenn reizh.</s:String>
+    <s:String x:Key="TeleCaps">Fazioù pennlizherennoù</s:String>
+    <s:String x:Key="TeleCapsDesc">Ankounac'haat Shift pe pouezañ dre zegouezh war Verr Maj.</s:String>
+    <s:String x:Key="TeleDouble">Daouvouezhiad dre zegouezh</s:String>
+    <s:String x:Key="TeleDoubleDesc">Pouezañ div wech war an hevelep touch dre zegouezh, ha reizhañ.</s:String>
+    <s:String x:Key="TeleCursor">Merdeiñ gant ar rederig</s:String>
+    <s:String x:Key="TeleCursorDesc">Implijout ar saethennoù da vont war-gil ha reizhañ ur fazi.</s:String>
+    <s:String x:Key="TeleAuto">Emreizhañ</s:String>
+    <s:String x:Key="TeleAutoDesc">Reizhañ ent emgefreek ar fazioù eilet goude un dale berr.</s:String>
+
+    <s:String x:Key="HeadTiming">Arventennoù tizh</s:String>
+    <s:String x:Key="DescTiming">Kempenn tempo hollek an eiladur.</s:String>
+    <s:String x:Key="TimingDelayHint">Izeloc'h = skrivañ prim. Uheloc'h = skrivañ gorrek ha poellek.</s:String>
+    <s:String x:Key="TimingChunkHint">Niver a arouezennoù meret en un tamm etre pep ehan-bihan.</s:String>
+    <s:String x:Key="TimingBreathHint">Pegoulz e teu an ehanioù hir, eilañ gwiad naturel ar c'horf.</s:String>
+
+    <!-- Dibarzhioù / Options tab -->
+    <s:String x:Key="HeadFeatures">Perzhioù</s:String>
+    <s:String x:Key="DescFeatures">Gweredekaat pe ziweredekaat pep arc'hwel. An arc'hwelioù diweredekaet ne selaouit ket o berradennoù ken.</s:String>
+    <s:String x:Key="FeatSP">Smart Paste</s:String>
+    <s:String x:Key="FeatSPDesc">3 mod pegañ gant troc'hañ emgefreek hag eiladur mab-den.</s:String>
+    <s:String x:Key="FeatSC">Smart Copy</s:String>
+    <s:String x:Key="FeatSCDesc">Pakañ endalc'had web en ur ContentPackage gant golver lies-furmad.</s:String>
+    <s:String x:Key="FeatPI">Paste Intercept</s:String>
+    <s:String x:Key="FeatPIDesc">Pakañ Ctrl+V evit stlejañ ar furmad gwellañ hervez an arload pal.</s:String>
+    <s:String x:Key="FeatCC">Kemmañ ar skritur</s:String>
+    <s:String x:Key="FeatCCDesc">Kelc'hiañ an destenn etre lizherennoù bihan, PENNLIZHERENNOÙ, Titl, aLtErNeK.</s:String>
+    <s:String x:Key="FeatAOT">Atav war-c'horre</s:String>
+    <s:String x:Key="FeatAOTDesc">Spilhennañ ar prenestr oberiant a-us d'an holl re all.</s:String>
+
+    <s:String x:Key="HeadSpeed">Tizh ar skrivañ</s:String>
+    <s:String x:Key="HeadStartup">Loc'hañ</s:String>
+    <s:String x:Key="StartMinimized">Loc'hañ bihannaet er varenn reizhiad</s:String>
+    <s:String x:Key="AutoStart">Loc'hañ ent emgefreek pa loc'h Windows</s:String>
+    <s:String x:Key="BtnReset">Adlakaat an arventennoù dre ziouer</s:String>
+
+    <!-- Diwar-benn / About tab -->
+    <s:String x:Key="AboutDesc">Ur gwiskad speredegezh golver evit Windows. Pegañ hervezek hervez an arload pal, golver lies-furmad gant krubuilh skeudennoù lec'hel, eiladur skrivañ mab-den, ha muioc'h c'hoazh.</s:String>
+    <s:String x:Key="AboutTagline">Savet gant entan evit ar berzh hag ar eeunder.</s:String>
+    <s:String x:Key="LicenseTitle">Aotre-implij</s:String>
+    <s:String x:Key="LicenseText">An holl wirioù miret. Meziant pourchaset digoust evit un implij personel hep-kenwerzhel hepken. Aotre ebet da espletiñ, da skignañ pe da implij e-keñver kenwerzhel hep un emglev skrivet a-raok.</s:String>
+
+    <!-- Taolenn-stur -->
+    <s:String x:Key="DashLaunch">DIGERIN AR POST URZHIAÑ</s:String>
+    <s:String x:Key="DashInput">TESTENN DA SKRIVAÑ</s:String>
+    <s:String x:Key="DashPreview">RAKWEL EN-URO</s:String>
+    <s:String x:Key="DashQuickSettings">ARVENTENNOÙ PRIM</s:String>
+    <s:String x:Key="DashStart">KREGIÑ</s:String>
+    <s:String x:Key="DashPause">EHANAÑ</s:String>
+    <s:String x:Key="DashStop">PAOUEZ</s:String>
+    <s:String x:Key="DashExit">KUITAAT</s:String>
+    <s:String x:Key="DashCountdownHint">Tremen d'an arload pal bremañ</s:String>
+    <s:String x:Key="DashManual">Dre zorn</s:String>
+    <s:String x:Key="DashAuto">Skrivañ emgefreek</s:String>
+    <s:String x:Key="DashSources">MAMMENNOÙ (txt, html, URL)</s:String>
+    <s:String x:Key="DashTargets">ARLOADOÙ PAL</s:String>
+    <s:String x:Key="DashLoop">Kelc'h dibad</s:String>
+    <s:String x:Key="DashClear">Skarzhañ an teul a-raok skrivañ</s:String>
+    <s:String x:Key="DashScheduler">PROGRAMMER</s:String>
+    <s:String x:Key="DashSchedulerOn">Oberiant</s:String>
+
+</ResourceDictionary>
