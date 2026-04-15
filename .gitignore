@@ -6,6 +6,8 @@
 *.sln.docstates
 *.userprefs
 *.DS_Store
+*.git
+*claude
 
 # Build results
 [Dd]ebug/
