@@ -7,7 +7,7 @@
 *.userprefs
 *.DS_Store
 *.git
-*claude
+*.claude
 
 # Build results
 [Dd]ebug/
