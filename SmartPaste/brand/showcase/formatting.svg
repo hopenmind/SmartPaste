@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="Formatting kept">
+  <title>Formatting kept</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0C574"/><stop offset="1" stop-color="#C6862B"/></linearGradient></defs>
+  <rect x="2" y="2" width="356" height="236" rx="18" fill="#1B0D20" stroke="url(#g)" stroke-width="2"/>
+  <rect x="24" y="22" width="52" height="4" rx="2" fill="url(#g)"/>
+  <text x="180" y="74" text-anchor="middle" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" font-size="58" fill="url(#g)">A</text>
+      <rect x="150" y="82" width="60" height="5" rx="2.5" fill="url(#g)"/>
+  <text x="180" y="152" text-anchor="middle" fill="#F5EEDD" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" font-size="25">Formatting kept</text>
+  <text x="180" y="182" text-anchor="middle" fill="#B79FB0" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-size="15">Bold, italic, colour, lists,</text>
+  <text x="180" y="204" text-anchor="middle" fill="#B79FB0" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-size="15">headings and tables.</text>
+</svg>

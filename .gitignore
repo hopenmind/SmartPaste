@@ -1,0 +1,25 @@
+# ── Build output ──
+bin/
+obj/
+publish/
+dist/
+*.pdb
+
+# ── Installer output ──
+installer/Output/
+*.msi
+
+# ── IDE / editor ──
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+
+# ── Local caches / analysis artifacts (never shipped) ──
+*.cache
+
+# ── OS ──
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 44" width="306" height="44" role="img" aria-label="Honesty and limits">
+  <title>Honesty and limits</title>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0C574"/><stop offset="1" stop-color="#C6862B"/></linearGradient>
+    <style>
+      .rest { fill: #26102A; }
+      @media (prefers-color-scheme: dark) { .rest { fill: #F2E8EC; } }
+      text { font-family: 'Trebuchet MS','Segoe UI',system-ui,sans-serif; font-weight: 700; }
+    </style>
+  </defs>
+  <text x="3" y="32" font-size="30"><tspan fill="url(#g)">H</tspan><tspan class="rest">onesty and limits</tspan></text>
+</svg>

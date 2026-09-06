@@ -1,319 +1,182 @@
-<div align="center">
-  <img src="docs/banner.svg" alt="SmartPaste Banner" width="100%">
-  <h1>SmartPaste</h1>
-  <p><strong>A Windows system-tray utility that transforms how you paste, copy, convert, and manage text.</strong></p>
+<p align="center">
+  <img src="SmartPaste/brand/logo.png" width="300" alt="SmartPaste">
+</p>
 
-  [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D4?logo=windows11&logoColor=white)](#)
-  [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/download/dotnet/8.0)
-  [![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-red)](LICENSE)
-  [![Release](https://img.shields.io/badge/Release-win--x64%20%7C%20win--arm64-success?logo=github&logoColor=white)](https://github.com/hopenmind/smartpaste/releases)
-  [![Made by Hope 'n Mind](https://img.shields.io/badge/Made%20by-Hope%20'n%20Mind-1f6feb)](https://www.hopenmind.com)
-</div>
+<p align="center">
+  <img src="SmartPaste/brand/badges/stack.svg" alt="Stack: .NET 8">
+  <img src="SmartPaste/brand/badges/ui.svg" alt="UI: WPF">
+  <img src="SmartPaste/brand/badges/platforms.svg" alt="Platform: Windows">
+  <img src="SmartPaste/brand/badges/paste.svg" alt="Paste: target-aware">
+  <img src="SmartPaste/brand/badges/license.svg" alt="License: all rights reserved">
+  <img src="SmartPaste/brand/badges/version.svg" alt="Version: 1.0.1">
+</p>
 
----
+# SmartPaste
 
-## Overview
+A keyboard-first clipboard companion for Windows. Software by Hope 'n Mind.
 
-**SmartPaste** is a lightweight, invisible Windows utility that lives in your system tray and intercepts custom global keyboard shortcuts to perform intelligent clipboard operations. It never steals focus from your active window it just types, copies, converts, and manages text on your behalf.
+SmartPaste lives in the system tray. It captures a rich selection once, then pastes the *right* format into whatever application is in front of you: full HTML into browsers and office suites, RTF into WordPad, Markdown into markdown editors, a vector into Inkscape. Images, equations and formatting survive the trip. It is built to preserve meaning, and to state plainly what each target can and cannot keep.
 
-Whether you're fighting web forms that refuse pasted keyword lists, needing to make automated input look human, or wanting to pin a reference window on top while you work, SmartPaste has you covered.
+<table>
+  <tr>
+    <td><img src="SmartPaste/brand/showcase/paste-intact.svg" width="260" alt="Paste, intact"></td>
+    <td><img src="SmartPaste/brand/showcase/target-aware.svg" width="260" alt="Target-aware"></td>
+    <td><img src="SmartPaste/brand/showcase/offline.svg" width="260" alt="Yours, offline"></td>
+  </tr>
+</table>
 
----
+<p align="center">
+  <a href="https://github.com/hopenmind/SmartPaste/releases/latest/download/SmartPaste-Setup-x64.exe"><img src="SmartPaste/brand/download.svg" width="300" alt="Download SmartPaste for Windows (installer, .exe, 64-bit)"></a>
+</p>
 
-## Features
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
-<div align="center">
-  <img src="docs/features.svg" alt="SmartPaste Features Overview" width="100%">
-</div>
+<a id="paste-pipeline"></a>
+<img src="SmartPaste/brand/titles/paste-pipeline.svg" height="30" alt="The paste pipeline">
 
-### 1. Smart Paste Intelligent List Pasting
+Copy once, and let the target decide nothing. Smart Copy builds a self-contained package of what you selected; on paste, SmartPaste detects the foreground application and hands it the single format it renders best.
 
-Copy a block of text (keywords, tags, lists) and SmartPaste will type it out for you as if a human were doing it. Three modes cover every paste scenario:
+<p align="center">
+  <img src="SmartPaste/brand/flow.svg" width="820" alt="The target-aware paste pipeline: Smart Copy builds a content package, target detection routes the best format per app">
+</p>
 
-| Shortcut (default) | Mode | Behavior |
-|---|---|---|
-| `Ctrl` + `Shift` + `V` | **Enter mode** | Splits text into items, types each one, then presses `Enter`. Ideal for keyword/tag fields that validate one entry at a time. |
-| `Ctrl` + `Alt` + `V` | **Space mode** | Splits text into items, types each one, then presses `Space`. Ideal for inline tag fields. |
-| `Ctrl` + `Win` + `V` | **Normal mode** | Types the entire clipboard content character by character. |
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **One capture, every format.** Smart Copy turns the selection into a self-contained Content Package: each image embedded as a `data:` URI, SVG equations kept as vectors, and a parallel RTF built with `\pict` images. Nothing depends on a link that can break.
 
-**Smart Auto-Splitting Engine** no delimiter configuration required. SmartPaste automatically detects and splits copied text on any of:
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **The target decides nothing.** On paste, the foreground app is detected and given exactly the format it renders best: CF_HTML for browsers, Office, LibreOffice and Electron apps; RTF for WordPad; Markdown for markdown editors; a bitmap or the SVG vector for image editors.
 
-`Enter` · `Comma` · `Semicolon` · `Period` · `Colon` · `Slash` · `Backslash` · `Pipe` · `Bullet` · `Middle Dot` · `Tab` · Newline
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Ctrl+V, upgraded.** When a Smart Copy is available, an ordinary Ctrl+V is transparently upgraded to the target-aware paste. When it is not, the keystroke passes straight through, so a normal paste is never swallowed.
 
-…plus full-width Unicode variants used in CJK text (`，；：。、｜`). If none are found, it falls back to splitting by spaces.
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
----
+<a id="smart-copy"></a>
+<img src="SmartPaste/brand/titles/smart-copy.svg" height="30" alt="Smart Copy">
 
-### 2. Telework Mode Realistic Human Typing Simulation
+A faithful, self-contained copy of the selection, so what you see is what you paste, wherever you paste it.
 
-A dedicated engine for producing keystroke patterns that are indistinguishable from a real person typing. Designed to bypass productivity-monitoring software ("bossware"), anti-bot form detectors, and any system that flags instant or perfectly rhythmic input as automated.
+<table>
+  <tr>
+    <td><img src="SmartPaste/brand/showcase/images.svg" width="260" alt="Images kept"></td>
+    <td><img src="SmartPaste/brand/showcase/equations.svg" width="260" alt="Equations kept"></td>
+    <td><img src="SmartPaste/brand/showcase/formatting.svg" width="260" alt="Formatting kept"></td>
+  </tr>
+</table>
 
-Ten independently toggleable options:
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Images travel with the text.** Remote images are fetched with browser-like headers and embedded; `data:` URIs are decoded (tolerant of wrapped or URL-safe base64) and inline SVG is inlined. The copied HTML is fully self-contained, so browsers, mail clients and Electron apps that reject file references still render every image.
 
-| # | Option | Effect |
-|---|---|---|
-| 1 | **Variable rhythm** | Each keystroke gets a randomized delay, mimicking natural speed fluctuations. |
-| 2 | **Micro-pauses** | Occasional longer pauses (300–800 ms) simulate moments of "thinking." |
-| 3 | **Flow bursts** | Sudden accelerations where several characters are typed rapidly "being in the zone." |
-| 4 | **Breathing pauses** | Longer periodic pauses simulating natural breathing/rest cadence. |
-| 5 | **Realistic typos** | Rare chance of typing a wrong letter, pressing `Backspace`, and retyping correctly. |
-| 6 | **Caps errors** | Occasional missed or errant `Shift`/`CapsLock` presses, then corrected. |
-| 7 | **Double keys** | Occasional duplicated keystrokes, then deleted. |
-| 8 | **Cursor navigation** | Simulates arrow-key navigation to fix mistakes mid-stream. |
-| 9 | **Auto-correct** | Simulates noticing and self-correcting errors after the fact. |
-| 10 | **End-of-line pauses** | Brief pauses at the end of lines/words, as a human would. |
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Equations survive.** A MathJax or KaTeX equation stays a live SVG vector for rich targets, and is rasterized to PNG for RTF and bitmap targets, so it reaches WordPad and image editors as an image rather than vanishing.
 
-**Configurable parameters:** base delay, chunk size, and breathing interval all adjustable from the **Telework** tab.
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Formatting is preserved, honestly.** Semantic HTML (bold, italic, underline, headings, colour, lists, tables) is carried into RTF for RTF-only editors; formatting expressed only through inline CSS reaches the rich targets through CF_HTML. Transparency is kept by reading the alpha-preserving clipboard image where an app provides it. *In practice: copy a Wikipedia section with an equation and paste it into an email or LibreOffice, image and maths intact.*
 
----
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
-### 3. Case Converter Instant Case Cycling
+<a id="smart-paste"></a>
+<img src="SmartPaste/brand/titles/smart-paste.svg" height="30" alt="Smart Paste and Telework">
 
-**Shortcut:** `Ctrl` + `Win` + `C`
+Fill a whole form from a single paste, drop the right format into any target, or type it out like a human when a field refuses a paste at all.
 
-Select any text in any application, press the shortcut, and it cycles through four case modes automatically:
+<p align="center">
+  <img src="SmartPaste/brand/list-fill.svg" width="820" alt="Paste a punctuation-separated list and each item lands in its own field, in order, with emails kept whole">
+</p>
 
-```
-lowercase → UPPERCASE → Title Case → aLtErNaTiNg CaSe → back to lowercase
-```
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Fill fields from a list.** Paste a punctuation-separated list (`keyword next, ceo bnts, yoann@example.com, ledo@site.eu`) and SmartPaste types each item into its own field, pressing Tab between them. A delimiter cuts an item only when a space sits beside it, so `yoann@example.com` and `ledo@site.eu` are never split on their dots. *In practice: fill a tag box, a recipients row, or a spreadsheet line from one clipboard.*
 
-Each press advances to the next mode. No menus, no configuration select, press, done.
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Target-aware paste.** Three bindings paste the captured content the way the target wants it, with no manual "paste special". *In practice: paste a formatted table into Word, and the very same copy as clean Markdown into Obsidian.*
 
----
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Human-rhythm typing.** For fields that block paste (secure inputs, some web forms, remote sessions), Telework types the text with a natural cadence: variable rhythm, micro-pauses, flow bursts, breathing pauses, and optional realistic corrections.
 
-### 4. Always On Top Pin Any Window
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Type from a file.** Load a document and Telework types its content, with a small always-on-top panel in front of the target so a run stops instantly with the red Stop button or the Escape key. *In practice: fill a legacy app that refuses paste, straight from a `.txt`.*
 
-**Shortcut:** `Ctrl` + `Alt` + `T`
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
-Click any window to make it active, press the shortcut, and that window stays pinned above all others. Press again to release. Useful for keeping a calculator, reference document, video player, or terminal visible while working in other apps.
+<a id="case-aot"></a>
+<img src="SmartPaste/brand/titles/case-aot.svg" height="30" alt="Case Converter and Always On Top">
 
----
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Case Converter.** Cycle the selection through lower, UPPER, and Title case with a single shortcut. *In practice: fix a heading pasted in ALL CAPS to Title case in place, without retyping.*
 
-### 5. Smart Copy `[BETA]` Faithful Web Content Capture
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Always On Top.** Pin the active window above the others, and release it, without hunting through a menu. *In practice: keep a reference PDF or a video pinned while you work in another app.*
 
-**Shortcut:** `Ctrl` + `Shift` + `C` *(disabled by default enable in the **Beta** tab)*
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
-Copies selected content from web pages and documents while preserving **exact visual fidelity** including rendered math equations, SVG graphics, and images.
+<a id="interface"></a>
+<img src="SmartPaste/brand/titles/interface.svg" height="30" alt="Interface">
 
-**How it works:**
-1. Intercepts the clipboard's HTML content after a normal copy.
-2. Detects all `<img>` tags (PNG, JPEG, GIF, SVG) and inline `<svg>` elements (commonly used by MathJax for equations).
-3. Downloads each image in memory and converts it to a **Base64 data URI**, embedding the image directly inside the HTML.
-4. Replaces the original web URLs with these self-contained Base64 blocks.
-5. Preserves RTF and plain-text fallbacks for compatibility with simpler editors.
+One window, keyboard-first, and a system-tray twin that can run the whole app on its own. The dashboard puts the four core functions a hover away around a radial wheel; every switch, brand and shortcut also lives in the tray menu.
 
-**Result:** Paste into Word, LibreOffice, Notion, or email clients and get the exact visual layout you saw on screen equations render perfectly and images don't break. No more broken LaTeX or missing images when copying from Wikipedia, arXiv, or scientific journals.
+<table>
+  <tr>
+    <td align="center" valign="middle" width="38%">
+      <img src="SmartPaste/brand/logo.png" width="186" alt="Smart-Paste"><br><br>
+      <img src="SmartPaste/brand/interface/claim-card.svg" width="228" alt="Copy once. Paste anywhere.">
+    </td>
+    <td align="center" valign="middle" width="62%">
+      <img src="SmartPaste/brand/interface/wheel.svg" width="440" alt="The function wheel: paste, copy, case and always-on-top around a central hub">
+    </td>
+  </tr>
+</table>
 
-> *Experimental feature behavior may change between releases.*
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **A wheel, not a menu.** The four core functions sit around a radial wheel. Hover a quadrant to configure it, while a locked centre holds your choice as you reach the options, so a function never deselects itself when the pointer drifts.
 
----
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **The whole app, from the tray.** The same controls live in the system-tray menu: a pill switch for each function, colour swatches to pick a brand, and Telework and Shortcuts as submenus. Shortcuts can be rebound from the tray without ever opening the window.
 
-### 6. Visual Shortcut Editor
+<p align="center">
+  <img src="SmartPaste/brand/interface/tray-menu.svg" width="298" alt="The tray menu: pill switches, colour swatches, submenus and startup options">
+</p>
 
-Every shortcut is fully reassignable. Click any shortcut field in the **Shortcuts** tab to open a **virtual keyboard popup**:
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Two brands, light and dark.** Switch between the Aubergine and Prune palettes, and between light and dark, from either surface; the choice applies live across the window and the tray. Start with Windows, start minimized, and minimize to tray are one toggle each.
 
-- Toggle modifier keys (`Ctrl`, `Alt`, `Shift`, `Win`) visually.
-- Click a main key to assign it.
-- Built-in **Windows shortcut conflict detection** warns you when a chosen combination is already reserved by the OS.
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
----
+<a id="install"></a>
+<img src="SmartPaste/brand/titles/install.svg" height="30" alt="Install">
 
-## User Interface
+Download the latest build and run it. Everything is self-contained: no separate .NET runtime is required.
 
-The settings window is organized into six tabs:
+<p align="center">
+  <a href="https://github.com/hopenmind/SmartPaste/releases/latest/download/SmartPaste-Setup-x64.exe"><img src="SmartPaste/brand/download.svg" width="300" alt="Download SmartPaste for Windows (installer, .exe, 64-bit)"></a>
+</p>
 
-| Tab | Purpose |
+That is all most people need. If you would rather run a portable build with no installer, these download directly from the latest release:
+
+| Portable build | Download |
 |---|---|
-| **Home** | Landing page with feature cards and quick navigation. |
-| **Shortcuts** | View and reassign every shortcut via the virtual keyboard popup. |
-| **Telework** | Toggle the 10 human-simulation options and tune delay / chunk / breathing intervals. |
-| **Functions** | Enable/disable individual features, set typing speed, and configure startup behavior. |
-| **Beta** | Experimental settings for Smart Copy. |
-| **About** | Version info, credits, and license details. |
+| Windows x64 | [SmartPaste-win-x64.zip](https://github.com/hopenmind/SmartPaste/releases/latest/download/SmartPaste-win-x64.zip) |
+| Windows ARM64 | [SmartPaste-win-arm64.zip](https://github.com/hopenmind/SmartPaste/releases/latest/download/SmartPaste-win-arm64.zip) |
 
-Right-click the **system tray icon** for a quick-access context menu (Settings, pause/resume, exit).
+Every build is also on the [release page](../../releases/latest). SmartPaste starts in the system tray; double-click the tray icon to open the dashboard, or right-click it for options.
 
----
+To build from source, install the **.NET 8 SDK** on Windows 10 or 11 and run `dotnet build -c Release SmartPaste/core/SmartPaste.csproj`. The self-contained bundles and the installer are produced by the release workflow on a version tag (see [`.github/workflows/build.yml`](.github/workflows/build.yml) and [`SmartPaste/installer/SmartPaste.iss`](SmartPaste/installer/SmartPaste.iss)).
 
-## Installation
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
-### Option A Download a Release (recommended)
+<a id="honesty"></a>
+<img src="SmartPaste/brand/titles/honesty.svg" height="30" alt="Honesty and limits">
 
-Pre-built, **self-contained single-file executables** are published on the Releases page. No .NET installation required.
+SmartPaste preserves what it can and names what it cannot.
 
-1. Go to the **[Releases](https://github.com/hopenmind/smartpaste/releases)** page.
-2. Download the ZIP for your architecture:
-   - `SmartPaste-win-x64.zip` Windows 64-bit (Intel/AMD)
-   - `SmartPaste-win-arm64.zip` Windows ARM64 (Surface Pro X, Snapdragon laptops)
-3. Extract the ZIP anywhere.
-4. Run **`SmartPaste.exe`**. The icon appears in your system tray.
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Windows only, by design.** SmartPaste is a WPF application built on Win32 clipboard formats, a low-level keyboard hook, global hotkeys and system-tray integration. The .NET 8 runtime is cross-platform, but this UI and its OS hooks are not, so there is no macOS or Linux build.
 
-> The builds are *self-contained* everything needed to run is bundled inside the single `.exe`. Just download, extract, and run.
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **WordPad reads RTF, not CF_HTML.** Semantic formatting is preserved in RTF; formatting expressed only through inline CSS (for example `<span style="font-weight:700">`) reaches the rich targets through CF_HTML but is not reconstructed in RTF.
 
-### Option B Build from Source
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Equations become images off the web.** They are kept as live SVG for rich targets and rasterized for RTF and bitmap targets, so they survive as images, not as editable vectors, in those places.
 
-See [Building from Source](#building-from-source) below.
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Some shortcuts belong to Windows.** Combinations the OS reserves (for example `Win+V`) cannot be rebound; the editor flags them by name.
 
-### First Launch
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> **Unreachable images are left as they are.** A remote image behind a login or an offline network is kept as its original reference rather than guessed at.
 
-By default, the settings window opens on first launch so you can review all shortcuts and features. Enable **Start minimized to system tray** in the **Functions** tab to skip this on future launches.
+<img src="SmartPaste/brand/rule.svg" width="100%" height="20" alt="">
 
----
+<a id="project"></a>
+<img src="SmartPaste/brand/titles/project.svg" height="30" alt="Project">
 
-## Usage Guide
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> [SECURITY](SECURITY.md): the security policy and how to report an issue.
 
-<div align="center">
-  <img src="docs/shortcuts.svg" alt="SmartPaste Shortcuts Reference" width="100%">
-</div>
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> [CONTRIBUTING](CONTRIBUTING.md): how contributions are handled.
 
-### Default Keyboard Shortcuts
+<img src="SmartPaste/brand/bullet.svg" width="15" alt=""> [LICENSE](LICENSE): all rights reserved. Free for personal, non-commercial use.
 
-| Shortcut | Action |
-|---|---|
-| `Ctrl` + `Shift` + `V` | Smart Paste **Enter mode** (type item + Enter) |
-| `Ctrl` + `Alt` + `V` | Smart Paste **Space mode** (type item + Space) |
-| `Ctrl` + `Win` + `V` | Smart Paste **Normal mode** (type char by char) |
-| `Ctrl` + `Win` + `C` | Case Converter (cycle lower → UPPER → Title → aLtErNaTiNg) |
-| `Ctrl` + `Alt` + `T` | Always On Top (pin / unpin active window) |
-| `Ctrl` + `Shift` + `C` | Smart Copy `[BETA]` *(disabled by default)* |
+<br>
 
-> All shortcuts are reassignable from the **Shortcuts** tab.
-
-### Typical Workflows
-
-- **Filling a tag field that rejects pasting** → Copy your keyword list → focus the field → press `Ctrl`+`Shift`+`V`.
-- **Making automated typing look human** → Enable Telework Mode options in the **Telework** tab → paste with any Smart Paste shortcut.
-- **Copying a Wikipedia equation into Word** → Enable Smart Copy in the **Beta** tab → select content on the page → press `Ctrl`+`Shift`+`C` → paste into Word.
-- **Quickly changing text case** → Select text → press `Ctrl`+`Win`+`C` repeatedly until the desired case appears.
-
-### Settings Persistence
-
-All settings are automatically saved to:
-
-```
-%LOCALAPPDATA%\SmartPaste\settings.json
-```
-
-Your shortcuts, typing speed, simulation preferences, and startup options are preserved between sessions.
-
----
-
-## Architecture
-
-<div align="center">
-  <img src="docs/architecture.svg" alt="SmartPaste Architecture Diagram" width="100%">
-</div>
-
-SmartPaste is a C# .NET 8 WPF application that relies on Win32 interop for global input interception and simulation.
-
-| Component | Purpose |
-|---|---|
-| `GlobalHotkey` | Win32 `RegisterHotKey` wrapper for system-wide shortcut interception. |
-| `PasteInterceptor` | Low-level keyboard hook (`WH_KEYBOARD_LL`) for paste interception. |
-| `SmartPasteManager` | Core paste engine 3 modes, smart splitting, and human simulation. |
-| `TargetDetector` | Detects the currently focused window/target for paste operations. |
-| `SmartCopyManager` | HTML clipboard interceptor with Base64 image/SVG embedding. |
-| `CaseConverterManager` | Text case cycling engine (lower / upper / title / alternating). |
-| `AlwaysOnTopManager` | Win32 `SetWindowPos` wrapper for window pinning. |
-| `AutoStartManager` | AppData self-copy and Windows Registry startup management. |
-| `SettingsManager` | JSON-based settings persistence in `%LOCALAPPDATA%`. |
-| `ShortcutParser` | Parses and resolves configurable shortcut combinations. |
-| `ContentPackage` | Packages captured Smart Copy content (HTML/RTF/text + embedded images). |
-
-### Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Language | C# |
-| Framework | .NET 8 · WPF |
-| System tray | [`Hardcodet.NotifyIcon.Wpf`](https://www.nuget.org/packages/Hardcodet.NotifyIcon.Wpf) 2.0.1 |
-| Key simulation | [`InputSimulatorCore`](https://www.nuget.org/packages/InputSimulatorCore) 1.0.5 |
-| Global hotkeys | Win32 `RegisterHotKey` via `user32.dll` |
-| Paste interception | Low-level keyboard hook (`WH_KEYBOARD_LL`) |
-| Window pinning | Win32 `SetWindowPos` |
-| Persistence | JSON file in `%LOCALAPPDATA%\SmartPaste\` |
-
----
-
-## Building from Source
-
-### Requirements
-
-- [**.NET 8 SDK**](https://dotnet.microsoft.com/download/dotnet/8.0)
-- **Windows 10 or 11**
-- **Visual Studio 2022** *or* the `dotnet` CLI
-
-### Steps
-
-```bash
-git clone https://github.com/hopenmind/smartpaste.git
-cd smartpaste
-dotnet restore
-dotnet build
-dotnet run
-```
-
-The compiled executable is placed in:
-
-```
-bin/Debug/net8.0-windows/SmartPaste.exe
-```
-
-### Publish a Self-Contained Single File
-
-```bash
-# Windows x64
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
-
-# Windows ARM64
-dotnet publish -c Release -r win-arm64 --self-contained true -p:PublishSingleFile=true
-```
-
-Output appears in `bin/Release/net8.0-windows/<RID>/publish/`.
-
----
-
-## Continuous Delivery
-
-This repository includes a **GitHub Actions** workflow that automatically builds self-contained single-file executables on every release tag for both architectures:
-
-| Asset | Architecture | Runtime |
-|---|---|---|
-| `SmartPaste-win-x64.zip` | Windows x64 (Intel/AMD) | Self-contained |
-| `SmartPaste-win-arm64.zip` | Windows ARM64 | Self-contained |
-
-Users download the ZIP, extract it, and run `SmartPaste.exe` **no .NET installation required**.
-
----
-
-## Security & Privacy
-
-- SmartPaste runs **entirely locally**. No telemetry, no analytics, no background reporting.
-- The only network traffic occurs when **Smart Copy** downloads images from web pages you explicitly copy from nothing else ever leaves your machine.
-- Telework Mode uses randomized timing no two paste sessions produce identical keystroke patterns.
-- Global keyboard hooks listen **only** for the specific registered shortcut combinations. All other keystrokes pass through untouched.
-
-See [SECURITY.md](SECURITY.md) for the full policy.
-
----
-
-## Contributing
-
-Contributions, bug reports, and feature requests are welcome. Please read the [**Contributing Guidelines**](CONTRIBUTING.md) before submitting a pull request.
-
----
-
-## License
-
-**Copyright © 2026 Hope 'n Mind [www.hopenmind.com](https://www.hopenmind.com)**
-
-**All Rights Reserved.** This software is provided **free of charge for personal, non-commercial use only.**
-
-No right of commercial exploitation, redistribution, modification, or creation of derivative works is granted without prior written permission from Hope 'n Mind. See the [LICENSE](LICENSE) file for full terms.
-
----
-
-<div align="center">
-  <strong>Hope 'n Mind</strong><br>
-  <a href="https://www.hopenmind.com">www.hopenmind.com</a>
-</div>
+<p align="center">
+  <img src="SmartPaste/brand/hm.svg" width="72" alt="Hope 'n Mind">
+</p>
+<p align="center"><sub>Made by <b>Hope 'n Mind</b></sub></p>

@@ -1,0 +1,321 @@
+<Window x:Class="SmartPaste.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:SmartPaste.Localization"
+        Title="Smart-Paste" Width="1004" Height="664"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing" FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <StreamGeometry x:Key="Geo.Desk">M3,8 H15 V9.5 H3 Z M4.5,9.5 V17 M13.5,9.5 V17 M15.5,12.5 H20.5 V14 H15.5 Z M16.5,14 V17 M19.5,14 V17 M20.5,14 V7.5</StreamGeometry>
+
+        <Style x:Key="Heartbeat" TargetType="Path">
+            <Setter Property="Stretch" Value="Fill"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="14"/>
+            <Setter Property="Stroke" Value="{DynamicResource Brush.WmColor}"/>
+            <Setter Property="StrokeThickness" Value="1.6"/>
+            <Setter Property="StrokeStartLineCap" Value="Round"/>
+            <Setter Property="StrokeEndLineCap" Value="Round"/>
+            <Setter Property="StrokeLineJoin" Value="Round"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,9,0,0"/>
+            <Setter Property="Effect">
+                <Setter.Value><DropShadowEffect BlurRadius="6" ShadowDepth="0" Opacity="0.85" Color="{DynamicResource Color.WmColor}"/></Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard RepeatBehavior="Forever">
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:1.7">
+                                <LinearDoubleKeyFrame Value="0.3" KeyTime="0:0:0"/>
+                                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.17"/>
+                                <LinearDoubleKeyFrame Value="0.5" KeyTime="0:0:0.34"/>
+                                <LinearDoubleKeyFrame Value="0.95" KeyTime="0:0:0.51"/>
+                                <LinearDoubleKeyFrame Value="0.32" KeyTime="0:0:0.75"/>
+                                <LinearDoubleKeyFrame Value="0.3" KeyTime="0:0:1.7"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- overlay scrim + sheet -->
+        <Style x:Key="Sheet" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Brush.Bg}"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="MaxWidth" Value="460"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value><DropShadowEffect BlurRadius="50" ShadowDepth="12" Opacity="0.5" Color="#140A18"/></Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Border CornerRadius="18" Margin="12" Background="{DynamicResource Brush.Bg}" ClipToBounds="True">
+            <Border.Effect><DropShadowEffect BlurRadius="40" ShadowDepth="10" Opacity="0.55" Color="#0A0509"/></Border.Effect>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ══ LEFT BRAND PANEL ══ -->
+                <Border Grid.Column="0" Background="{DynamicResource Brush.Panel}"
+                        MouseLeftButtonDown="Drag_MouseDown">
+                    <Grid Margin="20,30,20,18">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- runic wordmark, tinted per theme -->
+                        <Rectangle Grid.Row="0" Width="196" Height="34" HorizontalAlignment="Center"
+                                   Fill="{DynamicResource Brush.WmColor}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="pack://application:,,,/assets/wordmark.png" Stretch="Uniform"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+
+                        <Path Grid.Row="1" Style="{StaticResource Heartbeat}"
+                              Data="M0,8 H34 L39,8 L43,2 L48,14 L52,8 L57,8 H66 L70,8 L74,4 L78,12 L82,8 H100"/>
+
+                        <!-- logo with accent glow -->
+                        <Image Grid.Row="2" Source="{DynamicResource Image.Emblem}" Width="184" Height="184"
+                               HorizontalAlignment="Center" Margin="0,8,0,0">
+                            <Image.Effect>
+                                <DropShadowEffect BlurRadius="26" ShadowDepth="0" Opacity="0.55" Color="{DynamicResource Color.Accent}"/>
+                            </Image.Effect>
+                        </Image>
+
+                        <Path Grid.Row="3" Style="{StaticResource Heartbeat}"
+                              Data="M0,8 H34 L39,8 L43,2 L48,14 L52,8 L57,8 H66 L70,8 L74,4 L78,12 L82,8 H100"/>
+
+                        <!-- claim card - fills the space between the ECG line and Settings -->
+                        <Border Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Background="{DynamicResource Brush.WhiteA08}" CornerRadius="12" Padding="16,13" Margin="4,14">
+                            <StackPanel>
+                                <TextBlock Text="{x:Static loc:Strings.ClaimTitle}" FontSize="12.5" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource Brush.PanelInk}" TextAlignment="Center" TextWrapping="Wrap"/>
+                                <TextBlock Text="{x:Static loc:Strings.ClaimSub}" FontSize="10.5" Opacity="0.72"
+                                           Foreground="{DynamicResource Brush.PanelInk}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- ⚙ Settings (bottom) -->
+                        <Button Grid.Row="5" x:Name="SettingsButton" Click="OpenSettings_Click"
+                                Cursor="Hand" Foreground="{DynamicResource Brush.PanelInk}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="bd" Background="{DynamicResource Brush.WhiteA08}" CornerRadius="12" Padding="12">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE713;" FontSize="16"
+                                                       Foreground="{DynamicResource Brush.PanelInk}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{x:Static loc:Strings.SettingsButton}" Margin="10,0,0,0"
+                                                       FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Brush.PanelInk}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource Brush.WhiteA16}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- ══ MAIN (wheel) ══ -->
+                <Grid Grid.Column="1" Background="{DynamicResource Brush.Bg}">
+
+                    <!-- window controls (top-right) -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,12,0" Panel.ZIndex="4">
+                        <Button Click="Minimize_Click" Cursor="Hand" Width="30" Height="26" Background="Transparent" BorderThickness="0"
+                                Foreground="{DynamicResource Brush.Muted}">
+                            <Button.Template><ControlTemplate TargetType="Button"><Border Background="Transparent"><TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE921;" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/></Border></ControlTemplate></Button.Template>
+                        </Button>
+                        <Button Click="Close_Click" Cursor="Hand" Width="30" Height="26" Background="Transparent" BorderThickness="0"
+                                Foreground="{DynamicResource Brush.Muted}">
+                            <Button.Template><ControlTemplate TargetType="Button"><Border Background="Transparent"><TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/></Border></ControlTemplate></Button.Template>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- sun/moon (top-right, below window controls) -->
+                    <Button x:Name="SunMoonButton" Style="{StaticResource IconButton}" Click="ToggleMode_Click"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,44,16,0" Panel.ZIndex="4"
+                            ToolTip="{x:Static loc:Strings.LightDarkToggle}">
+                        <TextBlock x:Name="SunMoonGlyph" Style="{StaticResource Glyph}" FontSize="19" Text="&#xE706;"/>
+                    </Button>
+
+                    <!-- school desk → Telework (bottom-right) -->
+                    <Button Style="{StaticResource IconButton}" Click="OpenTelework_Click" Width="48" Height="48"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,16" Panel.ZIndex="4"
+                            ToolTip="{x:Static loc:Strings.TeleworkButton}" ToolTipService.Placement="Left" ToolTipService.InitialShowDelay="150">
+                        <Path Data="{StaticResource Geo.Desk}" Fill="Transparent" Stroke="{DynamicResource Brush.AccentInk}" StrokeThickness="1.7"
+                              StrokeLineJoin="Round" Width="24" Height="24" Stretch="Uniform"/>
+                    </Button>
+
+                    <!-- the wheel + runic hover-title below (reserved area) -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid x:Name="WheelHost" Width="468" Height="468" Background="Transparent"
+                              MouseMove="Wheel_MouseMove" MouseLeave="Wheel_MouseLeave">
+                            <Canvas x:Name="WheelCanvas" Width="468" Height="468" IsHitTestVisible="False"/>
+                            <Border x:Name="Hub" Width="280" Height="280" CornerRadius="140"
+                                    Background="{DynamicResource Brush.Surface}"
+                                    BorderBrush="{DynamicResource Brush.Accent}" BorderThickness="2"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.55" Color="{DynamicResource Color.Accent}"/>
+                                </Border.Effect>
+                                <ContentControl x:Name="HubContent" Margin="24"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock x:Name="RunicTitle" Text="" MinHeight="54" Margin="0,10,0,0"
+                                   FontFamily="pack://application:,,,/assets/fonts/#Norse" FontSize="34" FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.Accent}" HorizontalAlignment="Center" TextAlignment="Center">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.9" Color="{DynamicResource Color.Accent}"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+
+                <!-- ══ OVERLAYS (span both columns) ══ -->
+
+                <!-- Settings -->
+                <Grid x:Name="SettingsOverlay" Grid.ColumnSpan="2" Background="{DynamicResource Brush.PanelA55}"
+                      Visibility="Collapsed" MouseLeftButtonDown="Scrim_MouseDown">
+                    <Border Style="{StaticResource Sheet}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,4">
+                                <TextBlock Text="{x:Static loc:Strings.SettingsTitle}" FontSize="17" FontWeight="Bold"/>
+                                <Button Click="CloseOverlays_Click" HorizontalAlignment="Right" Width="30" Height="30" Cursor="Hand" Background="Transparent" BorderThickness="0"><TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="12" Foreground="{DynamicResource Brush.Muted}"/></Button>
+                            </Grid>
+
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static loc:Strings.LabelColourTheme}" Margin="0,14,0,8"/>
+                            <UniformGrid Columns="2" Height="52">
+                                <Button x:Name="BtnThemeAubergine" Click="PickAubergine_Click" Content="{x:Static loc:Strings.ThemeAubergine}"
+                                        Margin="0,0,6,0" Cursor="Hand" Foreground="White" FontWeight="Bold" FontSize="12.5">
+                                    <Button.Template><ControlTemplate TargetType="Button"><Border x:Name="bd" CornerRadius="13"><Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3C0C30" Offset="0"/><GradientStop Color="#C6862B" Offset="1"/></LinearGradientBrush></Border.Background><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                </Button>
+                                <Button x:Name="BtnThemePrune" Click="PickPrune_Click" Content="{x:Static loc:Strings.ThemePrune}"
+                                        Margin="6,0,0,0" Cursor="Hand" Foreground="White" FontWeight="Bold" FontSize="12.5">
+                                    <Button.Template><ControlTemplate TargetType="Button"><Border x:Name="bd" CornerRadius="13"><Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3C0C30" Offset="0"/><GradientStop Color="#A8D400" Offset="1"/></LinearGradientBrush></Border.Background><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                </Button>
+                            </UniformGrid>
+
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static loc:Strings.LabelStartup}" Margin="0,18,0,8"/>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel Margin="16,0">
+                                    <Grid Margin="0,10"><TextBlock Text="{x:Static loc:Strings.StartWithWindows}" FontSize="13" VerticalAlignment="Center"/><ToggleButton x:Name="TglStartWindows" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,10"><TextBlock Text="{x:Static loc:Strings.StartMinimized}" FontSize="13" VerticalAlignment="Center"/><ToggleButton x:Name="TglStartMin" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,10"><TextBlock Text="{x:Static loc:Strings.MinimizeToTray}" FontSize="13" VerticalAlignment="Center"/><ToggleButton x:Name="TglMinToTray" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,10"><TextBlock Text="{x:Static loc:Strings.InterceptCtrlV}" FontSize="13" VerticalAlignment="Center"/><ToggleButton x:Name="TglIntercept" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static loc:Strings.LabelShortcuts}" Margin="0,18,0,8"/>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel Margin="16,0">
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.ShortcutSmartPasteEnter}" FontSize="13" VerticalAlignment="Center"/><Button x:Name="KeySmartPasteEnter" Style="{StaticResource KeyCap}" HorizontalAlignment="Right" Tag="SmartPaste1" Click="RebindKey_Click"/></Grid>
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.ShortcutSmartPasteSpace}" FontSize="13" VerticalAlignment="Center"/><Button x:Name="KeySmartPasteSpace" Style="{StaticResource KeyCap}" HorizontalAlignment="Right" Tag="SmartPaste2" Click="RebindKey_Click"/></Grid>
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.ShortcutSmartPasteNormal}" FontSize="13" VerticalAlignment="Center"/><Button x:Name="KeySmartPasteNormal" Style="{StaticResource KeyCap}" HorizontalAlignment="Right" Tag="SmartPaste3" Click="RebindKey_Click"/></Grid>
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.ShortcutCaseConverter}" FontSize="13" VerticalAlignment="Center"/><Button x:Name="KeyCase" Style="{StaticResource KeyCap}" HorizontalAlignment="Right" Tag="Case" Click="RebindKey_Click"/></Grid>
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.ShortcutAlwaysOnTop}" FontSize="13" VerticalAlignment="Center"/><Button x:Name="KeyAot" Style="{StaticResource KeyCap}" HorizontalAlignment="Right" Tag="Aot" Click="RebindKey_Click"/></Grid>
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.ShortcutSmartCopy}" FontSize="13" VerticalAlignment="Center"/><Button x:Name="KeyCopy" Style="{StaticResource KeyCap}" HorizontalAlignment="Right" Tag="Copy" Click="RebindKey_Click"/></Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Telework -->
+                <Grid x:Name="TeleworkOverlay" Grid.ColumnSpan="2" Background="{DynamicResource Brush.PanelA55}"
+                      Visibility="Collapsed" MouseLeftButtonDown="Scrim_MouseDown">
+                    <Border Style="{StaticResource Sheet}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,2">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource Geo.Desk}" Stroke="{DynamicResource Brush.AccentInk}" StrokeThickness="1.7" StrokeLineJoin="Round" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static loc:Strings.TeleworkTitle}" FontSize="17" FontWeight="Bold" Margin="9,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Button Click="CloseOverlays_Click" HorizontalAlignment="Right" Width="30" Height="30" Cursor="Hand" Background="Transparent" BorderThickness="0"><TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8BB;" FontSize="12" Foreground="{DynamicResource Brush.Muted}"/></Button>
+                            </Grid>
+                            <TextBlock Text="{x:Static loc:Strings.TeleworkIntro}" FontSize="12" Foreground="{DynamicResource Brush.Muted}" TextWrapping="Wrap" Margin="0,4,0,4"/>
+
+                            <!-- Type from a file: load text, then type it with the human-rhythm engine -->
+                            <Border Style="{StaticResource Card}" Margin="0,6,0,0">
+                                <StackPanel Margin="16,12">
+                                    <TextBlock Text="{x:Static loc:Strings.TeleFileTitle}" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="TeleFileStatus" Text="{x:Static loc:Strings.TeleFileNone}" FontSize="11" Foreground="{DynamicResource Brush.Muted}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                        <Button Content="{x:Static loc:Strings.TeleLoadFile}" Style="{StaticResource FlatButton}" Click="LoadTeleworkFile_Click"/>
+                                        <Button x:Name="BtnTeleType" Content="{x:Static loc:Strings.TeleTypeNow}" Style="{StaticResource PrimaryButton}" Click="TeleworkType_Click" Margin="10,0,0,0" IsEnabled="False"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static loc:Strings.LabelCore}" Margin="0,14,0,8"/>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel Margin="16,0">
+                                    <Grid Margin="0,9"><StackPanel><TextBlock Text="{x:Static loc:Strings.TeleVariableRhythm}" FontSize="13"/><TextBlock Text="{x:Static loc:Strings.TeleVariableRhythmSub}" FontSize="11" Foreground="{DynamicResource Brush.Muted}"/></StackPanel><ToggleButton x:Name="TglTeleRhythm" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,9"><StackPanel><TextBlock Text="{x:Static loc:Strings.TeleMicroPauses}" FontSize="13"/><TextBlock Text="{x:Static loc:Strings.TeleMicroPausesSub}" FontSize="11" Foreground="{DynamicResource Brush.Muted}"/></StackPanel><ToggleButton x:Name="TglTeleMicro" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,9"><StackPanel><TextBlock Text="{x:Static loc:Strings.TeleFlowBursts}" FontSize="13"/><TextBlock Text="{x:Static loc:Strings.TeleFlowBurstsSub}" FontSize="11" Foreground="{DynamicResource Brush.Muted}"/></StackPanel><ToggleButton x:Name="TglTeleFlow" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,9"><StackPanel><TextBlock Text="{x:Static loc:Strings.TeleBreathing}" FontSize="13"/><TextBlock Text="{x:Static loc:Strings.TeleBreathingSub}" FontSize="11" Foreground="{DynamicResource Brush.Muted}"/></StackPanel><ToggleButton x:Name="TglTeleBreath" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static loc:Strings.LabelErrors}" Margin="0,16,0,8"/>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel Margin="16,0">
+                                    <Grid Margin="0,9"><StackPanel><TextBlock Text="{x:Static loc:Strings.TeleTypos}" FontSize="13"/><TextBlock Text="{x:Static loc:Strings.TeleTyposSub}" FontSize="11" Foreground="{DynamicResource Brush.Muted}"/></StackPanel><ToggleButton x:Name="TglTeleTypos" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.TeleCapsErrors}" FontSize="13" VerticalAlignment="Center"/><ToggleButton x:Name="TglTeleCaps" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                    <Grid Margin="0,9"><TextBlock Text="{x:Static loc:Strings.TeleDoubleKeys}" FontSize="13" VerticalAlignment="Center"/><ToggleButton x:Name="TglTeleDouble" Style="{StaticResource Switch}" HorizontalAlignment="Right"/></Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock x:Name="SpeedLabel" Style="{StaticResource SectionLabel}" Margin="0,16,0,4"/>
+                            <Slider x:Name="SldSpeed" Minimum="0" Maximum="200" TickFrequency="10" IsSnapToTickEnabled="True"
+                                    ValueChanged="Speed_Changed"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Shortcut editor -->
+                <Grid x:Name="ShortcutEditorOverlay" Grid.ColumnSpan="2" Background="{DynamicResource Brush.PanelA55}"
+                      Visibility="Collapsed" MouseLeftButtonDown="Scrim_MouseDown">
+                    <Border Style="{StaticResource Sheet}" MaxWidth="400">
+                        <StackPanel>
+                            <TextBlock x:Name="EditorTitle" FontSize="15" FontWeight="Bold" Margin="0,0,0,4"/>
+                            <Border Background="{DynamicResource Brush.Bg}" CornerRadius="11" Padding="18" Margin="0,8"
+                                    BorderThickness="2" BorderBrush="{DynamicResource Brush.AccentA62}">
+                                <TextBlock x:Name="CaptureText" Text="{x:Static loc:Strings.CapturePrompt}" FontFamily="Cascadia Mono, Consolas, monospace"
+                                           FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center"/>
+                            </Border>
+                            <TextBlock x:Name="EditorHint" Text="{x:Static loc:Strings.CaptureHint}" FontSize="11"
+                                       Foreground="{DynamicResource Brush.Muted}" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBlock x:Name="EditorError" FontSize="11.5" Foreground="#C0392B" TextWrapping="Wrap"
+                                       TextAlignment="Center" Margin="0,8,0,0" Visibility="Collapsed"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+                                <Button Content="{x:Static loc:Strings.Cancel}" Style="{StaticResource FlatButton}" Click="CloseOverlays_Click" Margin="0,0,9,0"/>
+                                <Button x:Name="BtnEditorApply" Content="{x:Static loc:Strings.Apply}" Style="{StaticResource PrimaryButton}" Click="ApplyRebind_Click" IsEnabled="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

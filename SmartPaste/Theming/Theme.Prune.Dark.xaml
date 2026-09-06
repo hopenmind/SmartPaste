@@ -1,0 +1,61 @@
+<!-- Generated palette: Prune / Dark. Every token of the mockup is exposed as a Color and a Brush. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <sys:String x:Key="Theme.Brand">Prune</sys:String>
+    <sys:String x:Key="Theme.Mode">Dark</sys:String>
+
+    <!-- Colors -->
+    <Color x:Key="Color.Bg">#150818</Color>
+    <Color x:Key="Color.Surface">#241028</Color>
+    <Color x:Key="Color.Surface2">#1B0C1E</Color>
+    <Color x:Key="Color.Ink">#F0E9EC</Color>
+    <Color x:Key="Color.Muted">#B49FAE</Color>
+    <Color x:Key="Color.Faint">#7C6576</Color>
+    <Color x:Key="Color.Accent">#B6E62A</Color>
+    <Color x:Key="Color.AccentInk">#C9F04A</Color>
+    <Color x:Key="Color.AccentSoft">#2C3A12</Color>
+    <Color x:Key="Color.BtnFg">#1A0C1C</Color>
+    <Color x:Key="Color.Panel">#0E060F</Color>
+    <Color x:Key="Color.PanelInk">#EEF6D6</Color>
+    <Color x:Key="Color.WmColor">#C9F04A</Color>
+    <Color x:Key="Color.WheelBg">#0C060E</Color>
+    <Color x:Key="Color.WheelSeg">#2A1330</Color>
+    <Color x:Key="Color.WheelInk">#EEF6D6</Color>
+    <Color x:Key="Color.Shadow">#140A18</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="Brush.Bg" Color="#150818"/>
+    <SolidColorBrush x:Key="Brush.Surface" Color="#241028"/>
+    <SolidColorBrush x:Key="Brush.Surface2" Color="#1B0C1E"/>
+    <SolidColorBrush x:Key="Brush.Ink" Color="#F0E9EC"/>
+    <SolidColorBrush x:Key="Brush.Muted" Color="#B49FAE"/>
+    <SolidColorBrush x:Key="Brush.Faint" Color="#7C6576"/>
+    <SolidColorBrush x:Key="Brush.Accent" Color="#B6E62A"/>
+    <SolidColorBrush x:Key="Brush.AccentInk" Color="#C9F04A"/>
+    <SolidColorBrush x:Key="Brush.AccentSoft" Color="#2C3A12"/>
+    <SolidColorBrush x:Key="Brush.BtnFg" Color="#1A0C1C"/>
+    <SolidColorBrush x:Key="Brush.Panel" Color="#0E060F"/>
+    <SolidColorBrush x:Key="Brush.PanelInk" Color="#EEF6D6"/>
+    <SolidColorBrush x:Key="Brush.WmColor" Color="#C9F04A"/>
+    <SolidColorBrush x:Key="Brush.WheelBg" Color="#0C060E"/>
+    <SolidColorBrush x:Key="Brush.WheelSeg" Color="#2A1330"/>
+    <SolidColorBrush x:Key="Brush.WheelInk" Color="#EEF6D6"/>
+
+    <!-- Derived translucent brushes (CSS color-mix equivalents) -->
+    <SolidColorBrush x:Key="Brush.InkA08" Color="#14F0E9EC"/>
+    <SolidColorBrush x:Key="Brush.InkA14" Color="#24F0E9EC"/>
+    <SolidColorBrush x:Key="Brush.InkA18" Color="#2EF0E9EC"/>
+    <SolidColorBrush x:Key="Brush.AccentA42" Color="#6BB6E62A"/>
+    <SolidColorBrush x:Key="Brush.AccentA62" Color="#9EB6E62A"/>
+    <SolidColorBrush x:Key="Brush.AccentA85" Color="#D9B6E62A"/>
+    <SolidColorBrush x:Key="Brush.PanelA55" Color="#8C0E060F"/>
+    <SolidColorBrush x:Key="Brush.WhiteA08" Color="#14FFFFFF"/>
+    <SolidColorBrush x:Key="Brush.WhiteA16" Color="#29FFFFFF"/>
+    <SolidColorBrush x:Key="Brush.ShadowA28" Color="#47140A18"/>
+
+    <!-- Brand emblem for this palette -->
+    <BitmapImage x:Key="Image.Emblem" UriSource="pack://application:,,,/assets/mark-prune.png"/>
+
+</ResourceDictionary>

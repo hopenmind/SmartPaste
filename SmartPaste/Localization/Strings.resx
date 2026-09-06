@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Smart-Paste</value>
+  </data>
+  <data name="TrayTooltip" xml:space="preserve">
+    <value>Smart-Paste - right-click for options</value>
+  </data>
+  <data name="TrayOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="TrayPauseIntercept" xml:space="preserve">
+    <value>Pause Ctrl+V interception</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="LightDarkToggle" xml:space="preserve">
+    <value>Light / dark</value>
+  </data>
+  <data name="TeleworkButton" xml:space="preserve">
+    <value>Telework</value>
+  </data>
+  <data name="HubBy" xml:space="preserve">
+    <value>By</value>
+  </data>
+  <data name="HubCompany" xml:space="preserve">
+    <value>Hope 'n Mind</value>
+  </data>
+  <data name="HubRunning" xml:space="preserve">
+    <value>Running · {0} active</value>
+  </data>
+  <data name="HubHint" xml:space="preserve">
+    <value>Hover a function to configure</value>
+  </data>
+  <data name="HubEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="FeatureSmartPaste" xml:space="preserve">
+    <value>Smart Paste</value>
+  </data>
+  <data name="FeatureSmartPasteDesc" xml:space="preserve">
+    <value>Type lists into any field.</value>
+  </data>
+  <data name="FeatureSmartCopy" xml:space="preserve">
+    <value>Smart Copy</value>
+  </data>
+  <data name="FeatureSmartCopyDesc" xml:space="preserve">
+    <value>Faithful web capture.</value>
+  </data>
+  <data name="FeatureAlwaysOnTop" xml:space="preserve">
+    <value>Always On Top</value>
+  </data>
+  <data name="FeatureAlwaysOnTopDesc" xml:space="preserve">
+    <value>Pin the active window.</value>
+  </data>
+  <data name="FeatureCaseConverter" xml:space="preserve">
+    <value>Case Converter</value>
+  </data>
+  <data name="FeatureCaseConverterDesc" xml:space="preserve">
+    <value>Cycle lower · UPPER · Title.</value>
+  </data>
+  <data name="CaseGlyph" xml:space="preserve">
+    <value>Aa</value>
+  </data>
+  <data name="StatusActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="StatusOff" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="ModeEnter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="ModeSpace" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="ModeNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="OptTargetAware" xml:space="preserve">
+    <value>Target-aware</value>
+  </data>
+  <data name="OptEmbedSvg" xml:space="preserve">
+    <value>Embed SVG</value>
+  </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="CloseGlyph" xml:space="preserve">
+    <value>✕</value>
+  </data>
+  <data name="LabelColourTheme" xml:space="preserve">
+    <value>Colour theme</value>
+  </data>
+  <data name="ThemeAubergine" xml:space="preserve">
+    <value>Aubergine &amp; Or</value>
+  </data>
+  <data name="ThemePrune" xml:space="preserve">
+    <value>Prune &amp; Chartreuse</value>
+  </data>
+  <data name="LabelStartup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="StartWithWindows" xml:space="preserve">
+    <value>Start with Windows</value>
+  </data>
+  <data name="StartMinimized" xml:space="preserve">
+    <value>Start minimized to tray</value>
+  </data>
+  <data name="InterceptCtrlV" xml:space="preserve">
+    <value>Intercept Ctrl+V for Smart Copy</value>
+  </data>
+  <data name="LabelShortcuts" xml:space="preserve">
+    <value>Shortcuts - click to rebind</value>
+  </data>
+  <data name="ShortcutSmartPasteEnter" xml:space="preserve">
+    <value>Smart Paste - Enter</value>
+  </data>
+  <data name="ShortcutSmartPasteSpace" xml:space="preserve">
+    <value>Smart Paste - Space</value>
+  </data>
+  <data name="ShortcutSmartPasteNormal" xml:space="preserve">
+    <value>Smart Paste - Normal</value>
+  </data>
+  <data name="ShortcutCaseConverter" xml:space="preserve">
+    <value>Case Converter</value>
+  </data>
+  <data name="ShortcutAlwaysOnTop" xml:space="preserve">
+    <value>Always On Top</value>
+  </data>
+  <data name="ShortcutSmartCopy" xml:space="preserve">
+    <value>Smart Copy</value>
+  </data>
+  <data name="ShortcutTelework" xml:space="preserve">
+    <value>Telework</value>
+  </data>
+  <data name="ResetDefaults" xml:space="preserve">
+    <value>Reset to defaults</value>
+  </data>
+  <data name="TeleworkTitle" xml:space="preserve">
+    <value>Telework - human typing</value>
+  </data>
+  <data name="TeleworkIntro" xml:space="preserve">
+    <value>For fields that block paste · accessibility · QA. Mixed to feel naturally human.</value>
+  </data>
+  <data name="LabelCore" xml:space="preserve">
+    <value>Core</value>
+  </data>
+  <data name="TeleVariableRhythm" xml:space="preserve">
+    <value>Variable rhythm</value>
+  </data>
+  <data name="TeleVariableRhythmSub" xml:space="preserve">
+    <value>Randomized delay between keystrokes</value>
+  </data>
+  <data name="TeleMicroPauses" xml:space="preserve">
+    <value>Micro-pauses</value>
+  </data>
+  <data name="TeleMicroPausesSub" xml:space="preserve">
+    <value>Occasional “thinking” pauses</value>
+  </data>
+  <data name="TeleFlowBursts" xml:space="preserve">
+    <value>Flow bursts</value>
+  </data>
+  <data name="TeleFlowBurstsSub" xml:space="preserve">
+    <value>Short accelerations</value>
+  </data>
+  <data name="TeleBreathing" xml:space="preserve">
+    <value>Breathing pauses</value>
+  </data>
+  <data name="TeleBreathingSub" xml:space="preserve">
+    <value>Periodic longer rests</value>
+  </data>
+  <data name="TeleEndOfLine" xml:space="preserve">
+    <value>End-of-line pause</value>
+  </data>
+  <data name="TeleEndOfLineSub" xml:space="preserve">
+    <value>Pause after Enter / newline</value>
+  </data>
+  <data name="LabelErrors" xml:space="preserve">
+    <value>Realistic errors</value>
+  </data>
+  <data name="TeleTypos" xml:space="preserve">
+    <value>Typos</value>
+  </data>
+  <data name="TeleTyposSub" xml:space="preserve">
+    <value>Wrong key → backspace → retype</value>
+  </data>
+  <data name="TeleCapsErrors" xml:space="preserve">
+    <value>Caps errors</value>
+  </data>
+  <data name="TeleDoubleKeys" xml:space="preserve">
+    <value>Double key-strokes</value>
+  </data>
+  <data name="TeleCursorNav" xml:space="preserve">
+    <value>Cursor navigation</value>
+  </data>
+  <data name="TeleCursorNavSub" xml:space="preserve">
+    <value>Arrow-key corrections</value>
+  </data>
+  <data name="TeleAutoCorrect" xml:space="preserve">
+    <value>Auto-correct mistakes</value>
+  </data>
+  <data name="LabelBaseSpeed" xml:space="preserve">
+    <value>Base speed · {0} ms</value>
+  </data>
+  <data name="LabelTiming" xml:space="preserve">
+    <value>Timing</value>
+  </data>
+  <data name="TeleDelay" xml:space="preserve">
+    <value>Telework delay · {0} ms</value>
+  </data>
+  <data name="TeleChunk" xml:space="preserve">
+    <value>Word chunk · {0} chars</value>
+  </data>
+  <data name="TeleBreathInterval" xml:space="preserve">
+    <value>Breathing every · {0} chars</value>
+  </data>
+  <data name="ShortcutEditorTitle" xml:space="preserve">
+    <value>Rebind - {0}</value>
+  </data>
+  <data name="CapturePrompt" xml:space="preserve">
+    <value>Press the combination…</value>
+  </data>
+  <data name="CaptureModifiersOnly" xml:space="preserve">
+    <value>{0} + …</value>
+  </data>
+  <data name="CaptureHint" xml:space="preserve">
+    <value>Ctrl / Alt / Win + key, or a function key alone. Esc cancels.</value>
+  </data>
+  <data name="ErrorNeedModifier" xml:space="preserve">
+    <value>Add Ctrl, Alt or Win - or use a function key alone.</value>
+  </data>
+  <data name="ErrorShiftOnly" xml:space="preserve">
+    <value>Shift alone conflicts with normal typing.</value>
+  </data>
+  <data name="ErrorReserved" xml:space="preserve">
+    <value>Reserved by Windows: {0}</value>
+  </data>
+  <data name="ErrorUnsupported" xml:space="preserve">
+    <value>This key is not supported.</value>
+  </data>
+  <data name="ErrorDuplicate" xml:space="preserve">
+    <value>Already used by {0}.</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ReservedLock" xml:space="preserve">
+    <value>lock the computer</value>
+  </data>
+  <data name="ReservedTaskSwitch" xml:space="preserve">
+    <value>task switcher</value>
+  </data>
+  <data name="ReservedCloseWindow" xml:space="preserve">
+    <value>close window</value>
+  </data>
+  <data name="ReservedShowDesktop" xml:space="preserve">
+    <value>show desktop</value>
+  </data>
+  <data name="ReservedExplorer" xml:space="preserve">
+    <value>File Explorer</value>
+  </data>
+  <data name="ReservedRun" xml:space="preserve">
+    <value>Run dialog</value>
+  </data>
+  <data name="ReservedSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ReservedSettings" xml:space="preserve">
+    <value>Windows Settings</value>
+  </data>
+  <data name="ReservedTaskView" xml:space="preserve">
+    <value>Task View</value>
+  </data>
+  <data name="ReservedSecurity" xml:space="preserve">
+    <value>security screen</value>
+  </data>
+  <data name="ReservedTaskManager" xml:space="preserve">
+    <value>Task Manager</value>
+  </data>
+  <data name="ReservedStart" xml:space="preserve">
+    <value>Start menu</value>
+  </data>
+  <data name="ReservedQuickLink" xml:space="preserve">
+    <value>Quick Link menu</value>
+  </data>
+  <data name="ReservedActionCenter" xml:space="preserve">
+    <value>notification center</value>
+  </data>
+  <data name="ReservedClipboardHistory" xml:space="preserve">
+    <value>clipboard history</value>
+  </data>
+  <data name="ReservedSnip" xml:space="preserve">
+    <value>screen snipping</value>
+  </data>
+  <data name="ReservedProject" xml:space="preserve">
+    <value>project display</value>
+  </data>
+  <data name="ReservedGameBar" xml:space="preserve">
+    <value>Game Bar</value>
+  </data>
+  <data name="ReservedVoiceTyping" xml:space="preserve">
+    <value>voice typing</value>
+  </data>
+  <data name="ReservedAccessibility" xml:space="preserve">
+    <value>accessibility settings</value>
+  </data>
+  <data name="ReservedEmoji" xml:space="preserve">
+    <value>emoji panel</value>
+  </data>
+  <data name="ReservedVirtualDesktop" xml:space="preserve">
+    <value>virtual desktops</value>
+  </data>
+  <data name="ReservedMinimizeAll" xml:space="preserve">
+    <value>minimize all windows</value>
+  </data>
+  <data name="ReservedConnect" xml:space="preserve">
+    <value>Connect panel</value>
+  </data>
+  <data name="ReservedMagnifier" xml:space="preserve">
+    <value>Magnifier</value>
+  </data>
+  <data name="ReservedNarrator" xml:space="preserve">
+    <value>Narrator</value>
+  </data>
+  <data name="TrayDarkMode" xml:space="preserve">
+    <value>Dark mode</value>
+  </data>
+  <data name="TrayShortcuts" xml:space="preserve">
+    <value>Shortcuts</value>
+  </data>
+  <data name="TrayOpenPanel" xml:space="preserve">
+    <value>Open full panel…</value>
+  </data>
+  <data name="MinimizeToTray" xml:space="preserve">
+    <value>Minimize to tray</value>
+  </data>
+  <data name="ClaimTitle" xml:space="preserve">
+    <value>Copy once. Paste anywhere.</value>
+  </data>
+  <data name="ClaimSub" xml:space="preserve">
+    <value>Images, equations &amp; formatting - kept intact.</value>
+  </data>
+  <data name="TeleFileTitle" xml:space="preserve">
+    <value>Type from a file</value>
+  </data>
+  <data name="TeleFileNone" xml:space="preserve">
+    <value>No file loaded</value>
+  </data>
+  <data name="TeleLoadFile" xml:space="preserve">
+    <value>Load file…</value>
+  </data>
+  <data name="TeleTypeNow" xml:space="preserve">
+    <value>Type it (3 s)</value>
+  </data>
+  <data name="TeleFileLoaded" xml:space="preserve">
+    <value>{0} · {1} chars</value>
+  </data>
+  <data name="TeleTypingTitle" xml:space="preserve">
+    <value>Telework typing</value>
+  </data>
+  <data name="TeleStopHint" xml:space="preserve">
+    <value>Press Esc to stop</value>
+  </data>
+  <data name="TeleStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="TeleStarting" xml:space="preserve">
+    <value>Starting… focus your target</value>
+  </data>
+</root>

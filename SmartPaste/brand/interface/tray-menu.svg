@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 812" width="440" height="812" role="img" aria-label="SmartPaste tray menu: pill switches, colour swatches and submenus">
+  <title>SmartPaste tray menu</title>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0C574"/><stop offset="1" stop-color="#C6862B"/></linearGradient>
+    <radialGradient id="ground" cx="0.5" cy="0.3" r="1"><stop offset="0" stop-color="#241130"/><stop offset="1" stop-color="#160A1B"/></radialGradient>
+    <filter id="softglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6"/></filter>
+    <style>
+      .lbl { font-family: 'Trebuchet MS','Segoe UI',system-ui,sans-serif; font-size: 15.5px; fill: #EEE4EA; }
+      .knob-on  { fill: #FFFFFF; }
+      .knob-off { fill: #E7DEE9; }
+    </style>
+  </defs>
+
+  <rect x="1" y="1" width="438" height="810" rx="16" fill="url(#ground)"/>
+  <rect x="1" y="1" width="438" height="810" rx="16" fill="none" stroke="url(#gold)" stroke-width="2.5" filter="url(#softglow)" opacity="0.5">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4.5s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="1" y="1" width="438" height="810" rx="16" fill="none" stroke="url(#gold)" stroke-opacity="0.85" stroke-width="1.5"/>
+
+  <text x="24" y="45" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" font-size="16" fill="#F5EEDD">Open</text>
+
+  <!-- toggle rows: ON = gold track, knob right; OFF = dark track, knob left -->
+  <!-- Smart Paste ON -->
+  <text class="lbl" x="24" y="97">Smart Paste</text>
+  <rect x="364" y="78" width="54" height="28" rx="14" fill="url(#gold)"/>
+  <circle class="knob-on" cx="402" cy="92" r="11"/>
+  <!-- Smart Copy OFF -->
+  <text class="lbl" x="24" y="145">Smart Copy</text>
+  <rect x="364" y="126" width="54" height="28" rx="14" fill="#3A2440"/>
+  <circle class="knob-off" cx="380" cy="140" r="11"/>
+  <!-- Case Converter ON -->
+  <text class="lbl" x="24" y="193">Case Converter</text>
+  <rect x="364" y="174" width="54" height="28" rx="14" fill="url(#gold)"/>
+  <circle class="knob-on" cx="402" cy="188" r="11"/>
+  <!-- Always On Top ON -->
+  <text class="lbl" x="24" y="241">Always On Top</text>
+  <rect x="364" y="222" width="54" height="28" rx="14" fill="url(#gold)"/>
+  <circle class="knob-on" cx="402" cy="236" r="11"/>
+  <!-- Intercept Ctrl+V ON -->
+  <text class="lbl" x="24" y="289" font-size="14">Intercept Ctrl+V for Smart Copy</text>
+  <rect x="364" y="270" width="54" height="28" rx="14" fill="url(#gold)"/>
+  <circle class="knob-on" cx="402" cy="284" r="11"/>
+
+  <line x1="22" y1="316" x2="418" y2="316" stroke="url(#gold)" stroke-opacity="0.22" stroke-width="1.2"/>
+
+  <!-- submenus -->
+  <text class="lbl" x="24" y="353">Telework</text>
+  <path d="M404,346 L411,353 L404,360" fill="none" stroke="url(#gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text class="lbl" x="24" y="401">Shortcuts</text>
+  <path d="M404,394 L411,401 L404,408" fill="none" stroke="url(#gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <line x1="22" y1="430" x2="418" y2="430" stroke="url(#gold)" stroke-opacity="0.22" stroke-width="1.2"/>
+
+  <!-- brand swatches -->
+  <text class="lbl" x="24" y="469">Aubergine &amp; Or</text>
+  <rect x="372" y="453" width="26" height="26" rx="7" fill="url(#gold)" stroke="#F5EEDD" stroke-opacity="0.25"/>
+  <path d="M405,466 L410,472 L419,460" fill="none" stroke="url(#gold)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text class="lbl" x="24" y="517">Prune &amp; Chartreuse</text>
+  <rect x="372" y="501" width="26" height="26" rx="7" fill="#9FE315" stroke="#F5EEDD" stroke-opacity="0.25"/>
+
+  <!-- Dark mode ON -->
+  <text class="lbl" x="24" y="565">Dark mode</text>
+  <rect x="364" y="546" width="54" height="28" rx="14" fill="url(#gold)"/>
+  <circle class="knob-on" cx="402" cy="560" r="11"/>
+
+  <line x1="22" y1="592" x2="418" y2="592" stroke="url(#gold)" stroke-opacity="0.22" stroke-width="1.2"/>
+
+  <!-- startup / minimise OFF -->
+  <text class="lbl" x="24" y="629">Start with Windows</text>
+  <rect x="364" y="610" width="54" height="28" rx="14" fill="#3A2440"/>
+  <circle class="knob-off" cx="380" cy="624" r="11"/>
+  <text class="lbl" x="24" y="675">Start minimized to tray</text>
+  <rect x="364" y="656" width="54" height="28" rx="14" fill="#3A2440"/>
+  <circle class="knob-off" cx="380" cy="670" r="11"/>
+  <text class="lbl" x="24" y="721">Minimize to tray</text>
+  <rect x="364" y="702" width="54" height="28" rx="14" fill="#3A2440"/>
+  <circle class="knob-off" cx="380" cy="716" r="11"/>
+
+  <line x1="22" y1="750" x2="418" y2="750" stroke="url(#gold)" stroke-opacity="0.22" stroke-width="1.2"/>
+
+  <text class="lbl" x="24" y="787" fill="#D8B7C9">Exit</text>
+</svg>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" width="1200" height="540" role="img" aria-label="SmartPaste target-aware paste pipeline">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B0D20"/>
+      <stop offset="1" stop-color="#100810"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F0C574"/>
+      <stop offset="1" stop-color="#C6862B"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E9B657"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="540" rx="20" fill="url(#bg)"/>
+  <rect x="1" y="1" width="1198" height="538" rx="19" fill="none" stroke="#C6862B" stroke-opacity="0.30" stroke-width="1.5"/>
+
+  <!-- pipeline row -->
+  <g font-family="'Segoe UI', Helvetica, Arial, sans-serif">
+    <!-- Smart Copy -->
+    <rect x="60" y="46" width="300" height="92" rx="14" fill="#20112A" stroke="#C6862B" stroke-opacity="0.55" stroke-width="1.5"/>
+    <text x="210" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#E9B657">Smart Copy</text>
+    <text x="210" y="112" text-anchor="middle" font-size="13" fill="#B79FB0">captures the selection (Ctrl+Shift+C)</text>
+
+    <!-- Content Package -->
+    <rect x="450" y="46" width="300" height="92" rx="14" fill="#20112A" stroke="#C6862B" stroke-opacity="0.55" stroke-width="1.5"/>
+    <text x="600" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#E9B657">Content Package</text>
+    <text x="600" y="112" text-anchor="middle" font-size="13" fill="#B79FB0">self-contained HTML · RTF · image</text>
+
+    <!-- Target detection -->
+    <rect x="840" y="46" width="300" height="92" rx="14" fill="#20112A" stroke="#C6862B" stroke-opacity="0.55" stroke-width="1.5"/>
+    <text x="990" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#E9B657">Target detection</text>
+    <text x="990" y="112" text-anchor="middle" font-size="13" fill="#B79FB0">foreground app → best format</text>
+
+    <line x1="360" y1="92" x2="446" y2="92" stroke="#E9B657" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <line x1="750" y1="92" x2="836" y2="92" stroke="#E9B657" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+    <!-- distribution bus -->
+    <path d="M990,138 V196 H165 M165,196 V196" fill="none" stroke="#E9B657" stroke-opacity="0.8" stroke-width="2"/>
+    <line x1="165" y1="196" x2="1065" y2="196" stroke="#E9B657" stroke-opacity="0.8" stroke-width="2"/>
+    <line x1="165" y1="196" x2="165" y2="286" stroke="#E9B657" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <line x1="465" y1="196" x2="465" y2="286" stroke="#E9B657" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <line x1="765" y1="196" x2="765" y2="286" stroke="#E9B657" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <line x1="1065" y1="196" x2="1065" y2="286" stroke="#E9B657" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+    <!-- target cards -->
+    <!-- card 1 -->
+    <rect x="30" y="290" width="270" height="210" rx="14" fill="#180D1E" stroke="#C6862B" stroke-opacity="0.45" stroke-width="1.5"/>
+    <text x="48" y="326" font-size="14" font-weight="700" fill="#E9B657">Rich targets</text>
+    <text x="48" y="360" font-size="22" font-weight="700" fill="#F5EEDD">CF_HTML</text>
+    <text x="48" y="392" font-size="12.5" fill="#B79FB0">Browsers · Office</text>
+    <text x="48" y="411" font-size="12.5" fill="#B79FB0">LibreOffice · Electron</text>
+    <text x="48" y="446" font-size="12.5" fill="#9B8C97">images (data: URI),</text>
+    <text x="48" y="465" font-size="12.5" fill="#9B8C97">equations (SVG),</text>
+    <text x="48" y="484" font-size="12.5" fill="#9B8C97">full formatting</text>
+
+    <!-- card 2 -->
+    <rect x="330" y="290" width="270" height="210" rx="14" fill="#180D1E" stroke="#C6862B" stroke-opacity="0.45" stroke-width="1.5"/>
+    <text x="348" y="326" font-size="14" font-weight="700" fill="#E9B657">WordPad</text>
+    <text x="348" y="360" font-size="22" font-weight="700" fill="#F5EEDD">RTF</text>
+    <text x="348" y="392" font-size="12.5" fill="#B79FB0">RichEdit editors</text>
+    <text x="348" y="428" font-size="12.5" fill="#9B8C97">text · paragraphs,</text>
+    <text x="348" y="447" font-size="12.5" fill="#9B8C97">raster + rasterized</text>
+    <text x="348" y="466" font-size="12.5" fill="#9B8C97">equations, bold ·</text>
+    <text x="348" y="485" font-size="12.5" fill="#9B8C97">italic · colour</text>
+
+    <!-- card 3 -->
+    <rect x="630" y="290" width="270" height="210" rx="14" fill="#180D1E" stroke="#C6862B" stroke-opacity="0.45" stroke-width="1.5"/>
+    <text x="648" y="326" font-size="14" font-weight="700" fill="#E9B657">Markdown editors</text>
+    <text x="648" y="360" font-size="22" font-weight="700" fill="#F5EEDD">Markdown</text>
+    <text x="648" y="392" font-size="12.5" fill="#B79FB0">Obsidian · Typora …</text>
+    <text x="648" y="428" font-size="12.5" fill="#9B8C97">headings, emphasis,</text>
+    <text x="648" y="447" font-size="12.5" fill="#9B8C97">lists, code, links,</text>
+    <text x="648" y="466" font-size="12.5" fill="#9B8C97">pipe tables</text>
+
+    <!-- card 4 -->
+    <rect x="930" y="290" width="270" height="210" rx="14" fill="#180D1E" stroke="#C6862B" stroke-opacity="0.45" stroke-width="1.5"/>
+    <text x="948" y="326" font-size="14" font-weight="700" fill="#E9B657">Image editors</text>
+    <text x="948" y="360" font-size="22" font-weight="700" fill="#F5EEDD">Bitmap · SVG</text>
+    <text x="948" y="392" font-size="12.5" fill="#B79FB0">GIMP · Inkscape</text>
+    <text x="948" y="428" font-size="12.5" fill="#9B8C97">PNG with alpha;</text>
+    <text x="948" y="447" font-size="12.5" fill="#9B8C97">Inkscape receives</text>
+    <text x="948" y="466" font-size="12.5" fill="#9B8C97">the vector SVG</text>
+  </g>
+</svg>

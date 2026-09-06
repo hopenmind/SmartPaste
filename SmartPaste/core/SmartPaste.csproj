@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>..\assets\icon.ico</ApplicationIcon>
+
+    <AssemblyName>SmartPaste</AssemblyName>
+    <RootNamespace>SmartPaste</RootNamespace>
+    <Version>1.0.1</Version>
+    <Company>Hope 'n Mind</Company>
+    <Product>SmartPaste</Product>
+    <Copyright>Copyright © 2026 Hope 'n Mind</Copyright>
+    <Description>A lightweight Windows utility that transforms how you paste, copy, and manage text.</Description>
+  </PropertyGroup>
+
+  <!-- Resource folders live one level up (SmartPaste/), outside this project dir
+       (SmartPaste/core/). They are linked in so the SDK still compiles/embeds them and
+       their logical paths stay /Theming/..., /assets/... and SmartPaste.Localization.Strings. -->
+  <ItemGroup>
+    <Page Include="..\Theming\*.xaml">
+      <Link>Theming\%(Filename)%(Extension)</Link>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Localization\Strings.cs">
+      <Link>Localization\Strings.cs</Link>
+    </Compile>
+    <EmbeddedResource Include="..\Localization\Strings.resx">
+      <Link>Localization\Strings.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\assets\icon-192.png"><Link>assets\icon-192.png</Link></Resource>
+    <Resource Include="..\assets\mark-aubergine.png"><Link>assets\mark-aubergine.png</Link></Resource>
+    <Resource Include="..\assets\mark-prune.png"><Link>assets\mark-prune.png</Link></Resource>
+    <Resource Include="..\assets\wordmark.png"><Link>assets\wordmark.png</Link></Resource>
+    <Resource Include="..\assets\hm.ico"><Link>assets\hm.ico</Link></Resource>
+    <Resource Include="..\assets\fonts\Norse.otf"><Link>assets\fonts\Norse.otf</Link></Resource>
+    <Resource Include="..\assets\fonts\Norsebold.otf"><Link>assets\fonts\Norsebold.otf</Link></Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+    <PackageReference Include="InputSimulatorCore" Version="1.0.5" />
+    <!-- SVG rasterization (equations / vector icons) to PNG for RTF and bitmap fallbacks -->
+    <PackageReference Include="SkiaSharp" Version="2.88.8" />
+    <PackageReference Include="Svg.Skia" Version="1.0.0.18" />
+  </ItemGroup>
+
+</Project>
