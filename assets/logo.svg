@@ -1,0 +1,34 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+    <linearGradient id="sparkle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+    <filter id="drop-shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded rect -->
+  <rect x="16" y="16" width="224" height="224" rx="48" fill="url(#bg-grad)" filter="url(#drop-shadow)" />
+  
+  <!-- Clipboard Board -->
+  <rect x="70" y="70" width="116" height="134" rx="16" fill="#ffffff" opacity="0.95" />
+  
+  <!-- Clipboard Clip -->
+  <path d="M100 50 h56 a8 8 0 0 1 8 8 v16 a8 8 0 0 1 -8 8 h-56 a8 8 0 0 1 -8 -8 v-16 a8 8 0 0 1 8 -8 z" fill="#94A3B8" />
+  <rect x="116" y="40" width="24" height="16" rx="6" fill="#CBD5E1" />
+
+  <!-- Text lines on clipboard -->
+  <rect x="90" y="110" width="76" height="8" rx="4" fill="#E2E8F0" />
+  <rect x="90" y="134" width="76" height="8" rx="4" fill="#E2E8F0" />
+  <rect x="90" y="158" width="50" height="8" rx="4" fill="#E2E8F0" />
+
+  <!-- Magic Sparkles -->
+  <path d="M 170 120 L 176 136 L 192 142 L 176 148 L 170 164 L 164 148 L 148 142 L 164 136 Z" fill="url(#sparkle-grad)" />
+  <path d="M 200 90 L 203 100 L 213 103 L 203 106 L 200 116 L 197 106 L 187 103 L 197 100 Z" fill="#FDE68A" />
+</svg>
